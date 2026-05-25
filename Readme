@@ -1,0 +1,80 @@
+# Projet Voronoï / Delaunay — Orientation vers un hôpital adapté
+
+## Description du projet
+
+Ce projet a pour objectif de développer une application permettant d’orienter un patient vers l’hôpital le plus adapté à sa situation médicale.
+
+L’application s’appuie sur une carte 2D et utilise une approche basée sur le diagramme de Voronoï et la triangulation de Delaunay. Les hôpitaux sont représentés comme des sites Voronoï, tandis que les patients ou lieux d’urgence sont représentés comme des points utilisateurs.
+
+L’objectif n’est pas seulement de trouver l’hôpital le plus proche géographiquement, mais de proposer l’hôpital le plus adapté selon plusieurs critères :
+
+- la position du patient ;
+- le mode de transport ;
+- le temps de trajet ;
+- le niveau de saturation des hôpitaux ;
+- le service médical nécessaire ;
+- la disponibilité de l’hôpital.
+
+## Cas d’usage principal
+
+Le cas d’usage principal de l’application est :
+
+**Orienter un patient vers l’hôpital le plus adapté.**
+
+Exemple :
+
+Un ambulancier intervient auprès d’un patient présentant des signes d’AVC. Il place le patient sur la carte, sélectionne le mode de transport et indique le service médical nécessaire, par exemple la neurologie. L’application compare ensuite les hôpitaux selon leur distance, leur saturation et leurs services disponibles, puis recommande l’hôpital le plus adapté.
+
+## Approche Voronoï
+
+Dans ce projet :
+
+- les sites Voronoï représentent les hôpitaux ou centres d’urgence ;
+- les points utilisateurs représentent les patients ou lieux d’urgence ;
+- les zones de Voronoï représentent les zones de couverture des hôpitaux ;
+- les liens permettent d’associer chaque patient à l’hôpital le plus pertinent.
+
+Le diagramme de Voronoï permet donc de visualiser la répartition des zones de couverture, tandis que la triangulation de Delaunay peut aider à analyser les relations entre hôpitaux voisins.
+
+## Fonctionnalités prévues
+
+L’application devra permettre de :
+
+- ajouter un patient sur la carte ;
+- ajouter ou gérer des hôpitaux ;
+- choisir un mode de transport ;
+- choisir un service médical nécessaire ;
+- calculer les distances et temps de trajet ;
+- vérifier la saturation des hôpitaux ;
+- exclure les hôpitaux non adaptés ;
+- sélectionner l’hôpital le plus pertinent ;
+- afficher le chemin recommandé ;
+- afficher la zone Voronoï associée ;
+- consulter les statistiques des zones ;
+- importer une carte ;
+- exporter une carte.
+
+## Acteurs du système
+
+### Acteurs primaires
+
+- Patient
+- Ambulancier
+- Chef de ville
+- Municipalité
+
+### Acteurs secondaires
+
+- Base hospitalière
+- Service GPS / cartographique
+- Système de fichiers
+
+## Technologies 
+
+- Java
+- JavaFX
+- Git / GitHub
+- UML
+- Diagramme de Voronoï
+- Triangulation de Delaunay
+
