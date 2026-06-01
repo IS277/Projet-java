@@ -1,19 +1,6 @@
-public class Patient {
-    private String id;
-    private String name;
-    private Coordinate position;
+public class Patient extends Person {
 
     public Patient(String id, String name, Coordinate position) {
-        this.id = id;
-        this.name = name;
-        this.position = position;
+        super(id, name, position);
     }
-
-    public Coordinate getPosition() { return position; }
-    public void updatePosition(Coordinate newPosition) {
-        this.position = newPosition;
-    }
-
-    public String getId() { return id; }
-    public String getName() { return name; }
 }
