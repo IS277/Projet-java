@@ -7,6 +7,7 @@ public class Coordinate {
         this.longitude = longitude;
     }
 
+    // Approximation only — valid for short distances.
     public double distanceTo(Coordinate c) {
         double dx = this.latitude - c.latitude;
         double dy = this.longitude - c.longitude;
@@ -15,4 +16,9 @@ public class Coordinate {
 
     public double getLatitude() { return latitude; }
     public double getLongitude() { return longitude; }
+
+    @Override
+    public String toString() {
+        return "(" + latitude + ", " + longitude + ")";
+    }
 }
