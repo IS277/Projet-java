@@ -13,6 +13,10 @@ public class Hospital {
         this.currentCapacity = 0;
     }
 
+    public double getSaturationRate() {
+        return (double) currentCapacity / maxCapacity;
+    }
+    
     public boolean isSaturated() {
         return currentCapacity >= maxCapacity;
     }
@@ -26,4 +30,9 @@ public class Hospital {
     public Coordinate getPosition() { return position; }
     public int getMaxCapacity() { return maxCapacity; }
     public int getCurrentCapacity() { return currentCapacity; }
+
+    @Override
+    public String toString() {
+        return name + " (" + currentCapacity + "/" + maxCapacity + ")";
+    }
 }
