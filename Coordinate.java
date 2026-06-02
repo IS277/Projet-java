@@ -1,3 +1,7 @@
+
+
+import java.util.Objects;
+
 public class Coordinate {
     private double latitude;
     private double longitude;
@@ -14,6 +18,7 @@ public class Coordinate {
         return Math.sqrt(dx * dx + dy * dy);
     }
 
+
     public double getLatitude() { return latitude; }
     public double getLongitude() { return longitude; }
 
@@ -22,3 +27,36 @@ public class Coordinate {
         return "(" + latitude + ", " + longitude + ")";
     }
 }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    @Override
+    public String toString() {
+        return "Coordinate{" +
+                "latitude=" + latitude +
+                ", longitude=" + longitude +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Coordinate)) return false;
+
+        Coordinate other = (Coordinate) obj;
+        return Double.compare(latitude, other.latitude) == 0
+                && Double.compare(longitude, other.longitude) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(latitude, longitude);
+    }
+}
+
