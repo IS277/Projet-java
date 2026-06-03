@@ -6,18 +6,22 @@ public class EmergencyUnit extends Person {
 
     private Hospital attachedHospital;
 
+    private ServiceGPS gps;
+
     public EmergencyUnit(
             String id,
             String name,
             Coordinate position,
             EmergencyUnitType type,
-            Hospital attachedHospital
+            Hospital attachedHospital,
+            ServiceGPS gps
     ) {
 
         super(id, name, position);
 
         this.type = type;
         this.attachedHospital = attachedHospital;
+        this.gps = gps;
     }
 
     public EmergencyUnitType getType() {
@@ -26,6 +30,10 @@ public class EmergencyUnit extends Person {
 
     public Hospital getAttachedHospital() {
         return attachedHospital;
+    }
+
+    public ServiceGPS getGps(){ 
+        return gps;
     }
 
     public void setAttachedHospital(Hospital attachedHospital) {
