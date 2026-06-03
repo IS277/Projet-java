@@ -54,18 +54,6 @@ public class Hospital {
     }
 
 
-    public String getId() { return id; }
-    public String getName() { return name; }
-    public Coordinate getPosition() { return position; }
-    public int getMaxCapacity() { return maxCapacity; }
-    public int getCurrentCapacity() { return currentCapacity; }
-
-    @Override
-    public String toString() {
-        return name + " (" + currentCapacity + "/" + maxCapacity + ")";
-    }
-}
-
     public void addService(String service) {
         services.add(service);
     }
