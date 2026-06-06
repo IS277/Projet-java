@@ -52,7 +52,6 @@ public class DelaunayTriangle {
 }
 
 
-    /** Prints the triangle vertices. */
     public void display() {
         System.out.println("Triangle: " + vertices[0] + " " + vertices[1] + " " + vertices[2]);
     }
