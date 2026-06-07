@@ -1,5 +1,3 @@
-
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -16,7 +14,7 @@ public class Hospital {
 
     private int currentCapacity;
 
-    private List<String> services;
+    private List<HospitalServiceType> services;
 
     public Hospital(
             String id,
@@ -36,13 +34,9 @@ public class Hospital {
         this.services = new ArrayList<>();
     }
 
-
     public double getSaturationRate() {
         return (double) currentCapacity / maxCapacity;
     }
-    
-
-
 
     public boolean isSaturated() {
         return currentCapacity >= maxCapacity;
@@ -53,13 +47,13 @@ public class Hospital {
         this.currentCapacity = currentCapacity;
     }
 
-
-    public void addService(String service) {
+    // Question : ajoute un service médical disponible
+    public void addService(HospitalServiceType service) {
         services.add(service);
     }
 
     // Question : vérifie si un service existe
-    public boolean hasService(String service) {
+    public boolean hasService(HospitalServiceType service) {
         return services.contains(service);
     }
 
@@ -83,8 +77,8 @@ public class Hospital {
         return currentCapacity;
     }
 
-    public List<String> getServices() {
-        return services;
+    public List<HospitalServiceType> getServices() {
+        return new ArrayList<>(services);
     }
 
     @Override
@@ -120,4 +114,3 @@ public class Hospital {
         return Objects.hash(id);
     }
 }
-
