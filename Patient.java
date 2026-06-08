@@ -1,7 +1,23 @@
 public class Patient extends Person {
 
-    public Patient(String id, String name, Coordinate position) {
+    private HospitalServiceType requiredService;
+
+    public Patient(
+            String id,
+            String name,
+            Coordinate position,
+            HospitalServiceType requiredService
+    ) {
         super(id, name, position);
+        this.requiredService = requiredService;
+    }
+
+    public HospitalServiceType getRequiredService() {
+        return requiredService;
+    }
+
+    public void setRequiredService(HospitalServiceType requiredService) {
+        this.requiredService = requiredService;
     }
 
     @Override
@@ -10,6 +26,7 @@ public class Patient extends Person {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", position=" + position +
+                ", requiredService=" + requiredService +
                 '}';
     }
 }

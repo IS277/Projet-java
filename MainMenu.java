@@ -1,3 +1,4 @@
+/* 
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -7,10 +8,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-/**
+
  * Main menu of the Emergency Hospital Voronoi application.
  * Entry point of the JavaFX application.
- */
+ 
 public class MainMenu extends Application {
 
     @Override
@@ -60,3 +61,4 @@ public class MainMenu extends Application {
         launch(args);
     }
 }
+*/
