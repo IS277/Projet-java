@@ -1,18 +1,34 @@
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapManager {
 
     private Map<String, Hospital> hospitals;
     private Map<String, Patient> patients;
+    private Delaunay delaunay;
+
+    private VoronoiService voronoiService;
+
+    private List<DelaunayTriangle> triangles;
+
+    private List<VoronoiZone> zones;
 
     public MapManager() {
         hospitals = new HashMap<>();
         patients = new HashMap<>();
+
+        delaunay = new Delaunay();
+        voronoiService = new VoronoiService();
+
+        triangles = new ArrayList<>();
+        zones = new ArrayList<>();
     }
 
     public void addHospital(Hospital hospital) {
         hospitals.put(hospital.getId(), hospital);
+        recompute();
     }
 
     public void addPatient(Patient patient) {
@@ -29,6 +45,7 @@ public class MapManager {
 
     public void removeHospital(String hospitalId) {
         hospitals.remove(hospitalId);
+        recompute();
     }
 
     public void moveHospital(String hospitalId, Coordinate newPosition) {
@@ -39,6 +56,7 @@ public class MapManager {
         }
 
         hospital.updatePosition(newPosition);
+        recompute();
     }
 
     public void removePatient(String patientId) {
@@ -53,6 +71,26 @@ public class MapManager {
         }
 
         patient.updatePosition(newPosition);
+    }
+
+    public void recompute() {
+
+        List<Hospital> hospitalList = new ArrayList<>(hospitals.values());
+
+        triangles = delaunay.triangulate(
+                hospitalList);
+
+        zones = voronoiService.generateZones(
+                hospitalList,
+                triangles);
+    }
+
+    public List<DelaunayTriangle> getTriangles() {
+        return triangles;
+    }
+
+    public List<VoronoiZone> getZones() {
+        return zones;
     }
 
 }

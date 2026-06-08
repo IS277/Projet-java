@@ -46,13 +46,16 @@ public class Main {
                                 new Coordinate(15, 25),
                                 HospitalServiceType.NEUROLOGY);
 
-                List<Hospital> hospitals = new ArrayList<>();
+                MapManager manager = new MapManager();
 
-                hospitals.add(h1);
-                hospitals.add(h2);
-                hospitals.add(h3);
-                hospitals.add(h4);
-                hospitals.add(h5);
+                manager.addHospital(h1);
+                manager.addHospital(h2);
+                manager.addHospital(h3);
+                manager.addHospital(h4);
+                manager.addHospital(h5);
+
+                List<Hospital> hospitals = new ArrayList<>(
+                                manager.getHospitals().values());
 
                 AssignmentService service = new AssignmentService();
 
@@ -72,9 +75,7 @@ public class Main {
                                 "Best hospital : "
                                                 + result.getName());
 
-                Delaunay delaunay = new Delaunay();
-
-                List<DelaunayTriangle> triangles = delaunay.triangulate(hospitals);
+                List<DelaunayTriangle> triangles = manager.getTriangles();
 
                 System.out.println();
                 System.out.println("Delaunay triangles:");
@@ -103,8 +104,7 @@ public class Main {
                 for (Coordinate vertex : vertices) {
                         System.out.println(vertex);
                 }
-                System.out.println();
-                System.out.println("Voronoi vertices:");
+
                 List<VoronoiEdge> voronoiEdges = voronoi.getVoronoiEdges(
                                 triangles);
 
@@ -114,14 +114,32 @@ public class Main {
                 for (VoronoiEdge edge : voronoiEdges) {
                         System.out.println(edge);
                 }
-                List<VoronoiZone> zones = voronoi.generateZones(
-                                hospitals,
-                                triangles);
+                List<VoronoiZone> zones = manager.getZones();
 
                 System.out.println();
                 System.out.println("Voronoi zones:");
 
                 for (VoronoiZone zone : zones) {
+                        System.out.println(zone);
+                }
+
+                System.out.println();
+                System.out.println("=== Moving H1 ===");
+
+                manager.moveHospital(
+                                "H1",
+                                new Coordinate(120, 120));
+
+                System.out.println();
+
+                for (DelaunayTriangle triangle : manager.getTriangles()) {
+                        System.out.println(triangle);
+                }
+
+                System.out.println();
+                System.out.println("New Voronoi zones:");
+
+                for (VoronoiZone zone : manager.getZones()) {
                         System.out.println(zone);
                 }
         }
