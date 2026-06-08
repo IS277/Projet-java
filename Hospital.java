@@ -20,8 +20,7 @@ public class Hospital {
             String id,
             String name,
             Coordinate position,
-            int maxCapacity
-    ) {
+            int maxCapacity) {
 
         this.id = id;
         this.name = name;
@@ -107,6 +106,10 @@ public class Hospital {
         Hospital other = (Hospital) obj;
 
         return Objects.equals(id, other.id);
+    }
+
+    public void updatePosition(Coordinate newPosition) {
+        this.position = newPosition;
     }
 
     @Override
