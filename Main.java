@@ -82,5 +82,7 @@ public class Main {
                 for (DelaunayTriangle triangle : triangles) {
                         System.out.println(triangle);
                 }
+                System.out.println("ASCII map:");
+                AsciiMapRenderer.drawHospitalsAndDelaunay(hospitals, triangles, 40, 20);
         }
 }
