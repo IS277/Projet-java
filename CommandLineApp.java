@@ -89,10 +89,9 @@ public class CommandLineApp {
                 id,
                 name,
                 new Coordinate(latitude, longitude),
-                maxCapacity
-        );
+                maxCapacity);
 
-        hospital.addService(HospitalServiceType.GENERAL);
+        addServicesToHospital(hospital);
 
         manager.addHospital(hospital);
 
@@ -104,6 +103,11 @@ public class CommandLineApp {
         System.out.print("Hospital id: ");
         String id = scanner.nextLine();
 
+        if (!manager.getHospitals().containsKey(id)) {
+            System.out.println("Hospital not found: " + id);
+            return;
+        }
+
         manager.removeHospital(id);
 
         System.out.println("Hospital removed.");
@@ -114,6 +118,11 @@ public class CommandLineApp {
         System.out.print("Hospital id: ");
         String id = scanner.nextLine();
 
+        if (!manager.getHospitals().containsKey(id)) {
+            System.out.println("Hospital not found: " + id);
+            return;
+        }
+
         System.out.print("New latitude: ");
         double latitude = Double.parseDouble(scanner.nextLine());
 
@@ -122,10 +131,46 @@ public class CommandLineApp {
 
         manager.moveHospital(
                 id,
-                new Coordinate(latitude, longitude)
-        );
+                new Coordinate(latitude, longitude));
 
         System.out.println("Hospital moved.");
+    }
+
+    private void addServicesToHospital(Hospital hospital) {
+        boolean adding = true;
+
+        while (adding) {
+            System.out.println();
+            System.out.println("Available services:");
+            System.out.println("1 - GENERAL");
+            System.out.println("2 - NEUROLOGY");
+            System.out.println("3 - CARDIOLOGY");
+            System.out.println("4 - PEDIATRICS");
+            System.out.println("0 - Stop adding services");
+            System.out.print("Choice: ");
+
+            String choice = scanner.nextLine();
+
+            switch (choice) {
+                case "1":
+                    hospital.addService(HospitalServiceType.GENERAL);
+                    break;
+                case "2":
+                    hospital.addService(HospitalServiceType.NEUROLOGY);
+                    break;
+                case "3":
+                    hospital.addService(HospitalServiceType.CARDIOLOGY);
+                    break;
+                case "4":
+                    hospital.addService(HospitalServiceType.PEDIATRICS);
+                    break;
+                case "0":
+                    adding = false;
+                    break;
+                default:
+                    System.out.println("Invalid service.");
+            }
+        }
     }
 
     private void showDelaunay() {

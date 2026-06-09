@@ -1,5 +1,7 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Objects;
 
 public class Hospital {
@@ -14,7 +16,7 @@ public class Hospital {
 
     private int currentCapacity;
 
-    private List<HospitalServiceType> services;
+    private Set<HospitalServiceType> services;
 
     public Hospital(
             String id,
@@ -30,7 +32,7 @@ public class Hospital {
 
         this.currentCapacity = 0;
 
-        this.services = new ArrayList<>();
+        this.services = new HashSet<>();
     }
 
     public double getSaturationRate() {
@@ -76,8 +78,8 @@ public class Hospital {
         return currentCapacity;
     }
 
-    public List<HospitalServiceType> getServices() {
-        return new ArrayList<>(services);
+    public Set<HospitalServiceType> getServices() {
+        return new HashSet<>(services);
     }
 
     @Override
