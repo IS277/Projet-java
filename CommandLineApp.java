@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class CommandLineApp {
 
@@ -31,6 +34,7 @@ public class CommandLineApp {
             System.out.println("10 - Show patients");
             System.out.println("11 - Assign patient");
             System.out.println("12 - Add random patients");
+            System.out.println("13 - Import hospitals from CSV");
             System.out.println("0 - Quit");
 
             System.out.print("Choice: ");
@@ -85,6 +89,10 @@ public class CommandLineApp {
 
                 case "12":
                     addRandomPatients();
+                    break;
+
+                case "13":
+                    importHospitalsFromCsv();
                     break;
 
                 case "0":
@@ -444,6 +452,62 @@ public class CommandLineApp {
 
         for (Hospital hospital : manager.getHospitals().values()) {
             System.out.println(hospital);
+        }
+    }
+
+    private void importHospitalsFromCsv() {
+
+        System.out.print("CSV file path: ");
+        String filePath = scanner.nextLine();
+
+        try (BufferedReader reader = new BufferedReader(
+                new FileReader(filePath))) {
+
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+
+                String[] data = line.split(",");
+
+                if (data.length < 5) {
+                    continue;
+                }
+
+                String id = data[0].trim();
+                String name = data[1].trim();
+
+                double latitude = Double.parseDouble(data[2].trim());
+
+                double longitude = Double.parseDouble(data[3].trim());
+
+                int maxCapacity = Integer.parseInt(data[4].trim());
+
+                Hospital hospital = new Hospital(
+                        id,
+                        name,
+                        new Coordinate(
+                                latitude,
+                                longitude),
+                        maxCapacity);
+
+                hospital.addService(
+                        HospitalServiceType.GENERAL);
+
+                manager.addHospital(hospital);
+            }
+
+            System.out.println(
+                    "Hospitals imported successfully.");
+
+        } catch (IOException e) {
+
+            System.out.println(
+                    "Unable to read file.");
+
+        } catch (NumberFormatException e) {
+
+            System.out.println(
+                    "Invalid data inside CSV.");
         }
     }
 }
