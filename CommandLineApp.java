@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class CommandLineApp {
@@ -28,6 +29,7 @@ public class CommandLineApp {
             System.out.println("8 - Remove patient");
             System.out.println("9 - Move patient");
             System.out.println("10 - Show patients");
+            System.out.println("11 - Assign patient");
             System.out.println("0 - Quit");
 
             System.out.print("Choice: ");
@@ -74,6 +76,10 @@ public class CommandLineApp {
 
                 case "10":
                     showPatients();
+                    break;
+
+                case "11":
+                    assignPatient();
                     break;
 
                 case "0":
@@ -292,6 +298,48 @@ public class CommandLineApp {
         for (Patient patient : manager.getPatients().values()) {
             System.out.println(patient);
         }
+    }
+
+    private void assignPatient() {
+
+        System.out.print("Patient id: ");
+        String id = scanner.nextLine();
+
+        Patient patient = manager.getPatients().get(id);
+
+        if (patient == null) {
+            System.out.println("Patient not found: " + id);
+            return;
+        }
+
+        AssignmentService assignmentService = new AssignmentService();
+
+        Hospital hospital = assignmentService.findBestHospital(
+                patient,
+                new ArrayList<>(
+                        manager.getHospitals().values()));
+
+        if (hospital == null) {
+            System.out.println("No compatible hospital found.");
+            return;
+        }
+
+        hospital.admitPatient();
+
+        System.out.println();
+        System.out.println("Patient : "
+                + patient.getName());
+
+        System.out.println("Required service : "
+                + patient.getRequiredService());
+
+        System.out.println("Assigned hospital : "
+                + hospital.getName());
+
+        System.out.println("Capacity : "
+                + hospital.getCurrentCapacity()
+                + " / "
+                + hospital.getMaxCapacity());
     }
 
     private void showDelaunay() {

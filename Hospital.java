@@ -114,6 +114,15 @@ public class Hospital {
         this.position = newPosition;
     }
 
+    public boolean admitPatient() {
+        if (isSaturated()) {
+            return false;
+        }
+
+        currentCapacity++;
+        return true;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(id);
