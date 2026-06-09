@@ -35,8 +35,8 @@ public class VoronoiService {
 
     public List<VoronoiZone> generateZones(
             List<Hospital> hospitals,
-            List<DelaunayTriangle> triangles
-    ) {
+            List<Patient> patients,
+            List<DelaunayTriangle> triangles) {
         List<VoronoiZone> zones = new ArrayList<>();
 
         for (Hospital hospital : hospitals) {
@@ -49,12 +49,16 @@ public class VoronoiService {
             }
 
             if (vertices.size() >= 3) {
-                VoronoiZone zone =
-                        new VoronoiZone(
-                                "Zone-" + hospital.getId(),
-                                hospital,
-                                vertices
-                        );
+                VoronoiZone zone = new VoronoiZone(
+                        "Zone-" + hospital.getId(),
+                        hospital,
+                        vertices);
+
+                for (Patient patient : patients) {
+                    if (zone.contains(patient.getPosition())) {
+                        zone.addPatient(patient);
+                    }
+                }
 
                 zones.add(zone);
             }

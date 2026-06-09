@@ -33,6 +33,7 @@ public class MapManager {
 
     public void addPatient(Patient patient) {
         patients.put(patient.getId(), patient);
+        recompute();
     }
 
     public Map<String, Hospital> getHospitals() {
@@ -61,6 +62,7 @@ public class MapManager {
 
     public void removePatient(String patientId) {
         patients.remove(patientId);
+        recompute();
     }
 
     public void movePatient(String patientId, Coordinate newPosition) {
@@ -71,6 +73,7 @@ public class MapManager {
         }
 
         patient.updatePosition(newPosition);
+        recompute();
     }
 
     public void recompute() {
@@ -82,6 +85,7 @@ public class MapManager {
 
         zones = voronoiService.generateZones(
                 hospitalList,
+                new ArrayList<>(patients.values()),
                 triangles);
     }
 

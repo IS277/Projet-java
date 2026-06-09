@@ -98,6 +98,13 @@ public class CommandLineApp {
 
         System.out.print("Hospital id: ");
         String id = scanner.nextLine();
+        if (id.isBlank()) {
+
+            System.out.println("Hospital id cannot be empty.");
+
+            return;
+
+        }
 
         System.out.print("Hospital name: ");
         String name = scanner.nextLine();
@@ -203,6 +210,13 @@ public class CommandLineApp {
 
         System.out.print("Patient id: ");
         String id = scanner.nextLine();
+        if (id.isBlank()) {
+
+            System.out.println("Patient id cannot be empty.");
+
+            return;
+
+        }
 
         System.out.print("Patient name: ");
         String name = scanner.nextLine();
@@ -358,7 +372,22 @@ public class CommandLineApp {
         System.out.println("Voronoi zones:");
 
         for (VoronoiZone zone : manager.getZones()) {
+
             System.out.println(zone);
+
+            System.out.println(
+                    "Patients: "
+                            + zone.getPatientCount());
+
+            System.out.println(
+                    "Density: "
+                            + zone.getDensity());
+
+            System.out.println(
+                    "Average distance: "
+                            + zone.getAverageDistanceToHospital());
+
+            System.out.println();
         }
     }
 
