@@ -30,6 +30,7 @@ public class CommandLineApp {
             System.out.println("9 - Move patient");
             System.out.println("10 - Show patients");
             System.out.println("11 - Assign patient");
+            System.out.println("12 - Add random patients");
             System.out.println("0 - Quit");
 
             System.out.print("Choice: ");
@@ -80,6 +81,10 @@ public class CommandLineApp {
 
                 case "11":
                     assignPatient();
+                    break;
+
+                case "12":
+                    addRandomPatients();
                     break;
 
                 case "0":
@@ -354,6 +359,47 @@ public class CommandLineApp {
                 + hospital.getCurrentCapacity()
                 + " / "
                 + hospital.getMaxCapacity());
+    }
+
+    private void addRandomPatients() {
+
+        System.out.print("Number of patients: ");
+
+        String input = scanner.nextLine();
+
+        try {
+
+            int count = Integer.parseInt(input);
+
+            if (count <= 0) {
+                System.out.println("Number must be positive.");
+                return;
+            }
+
+            for (int i = 0; i < count; i++) {
+
+                int index = manager.getPatients().size() + i;
+
+                String id = "R" + index;
+                String name = "RandomPatient" + index;
+                double latitude = Math.random() * 500;
+                double longitude = Math.random() * 500;
+
+                Patient patient = new Patient(
+                        id,
+                        name,
+                        new Coordinate(latitude, longitude),
+                        HospitalServiceType.GENERAL);
+
+                manager.addPatient(patient);
+            }
+
+            System.out.println(count + " random patients added.");
+
+        } catch (NumberFormatException e) {
+
+            System.out.println("Invalid number.");
+        }
     }
 
     private void showDelaunay() {
