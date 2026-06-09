@@ -35,6 +35,8 @@ public class CommandLineApp {
             System.out.println("11 - Assign patient");
             System.out.println("12 - Add random patients");
             System.out.println("13 - Import hospitals from CSV");
+            System.out.println("14 - Save map");
+            System.out.println("15 - Load map");
             System.out.println("0 - Quit");
 
             System.out.print("Choice: ");
@@ -93,6 +95,14 @@ public class CommandLineApp {
 
                 case "13":
                     importHospitalsFromCsv();
+                    break;
+
+                case "14":
+                    saveMap();
+                    break;
+
+                case "15":
+                    loadMap();
                     break;
 
                 case "0":
@@ -508,6 +518,49 @@ public class CommandLineApp {
 
             System.out.println(
                     "Invalid data inside CSV.");
+        }
+    }
+
+    private void saveMap() {
+
+        System.out.print("File name: ");
+        String fileName = scanner.nextLine();
+
+        try {
+
+            MapPersistenceService persistence = new MapPersistenceService();
+
+            persistence.saveMap(
+                    manager,
+                    fileName);
+
+            System.out.println("Map saved.");
+
+        } catch (Exception e) {
+
+            System.out.println("Unable to save map.");
+        }
+    }
+
+    private void loadMap() {
+
+        System.out.print("File name: ");
+        String fileName = scanner.nextLine();
+
+        try {
+
+            MapPersistenceService persistence = new MapPersistenceService();
+
+            manager = persistence.loadMap(
+                    fileName);
+
+            manager.initializeAfterLoading();
+
+            System.out.println("Map loaded.");
+
+        } catch (Exception e) {
+
+            System.out.println("Unable to load map.");
         }
     }
 }

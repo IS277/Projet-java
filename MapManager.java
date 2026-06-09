@@ -2,18 +2,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
-public class MapManager {
+public class MapManager implements Serializable {
 
     private Map<String, Hospital> hospitals;
     private Map<String, Patient> patients;
-    private Delaunay delaunay;
+    private transient Delaunay delaunay;
 
-    private VoronoiService voronoiService;
+    private transient VoronoiService voronoiService;
 
-    private List<DelaunayTriangle> triangles;
+    private transient List<DelaunayTriangle> triangles;
 
-    private List<VoronoiZone> zones;
+    private transient List<VoronoiZone> zones;
 
     public MapManager() {
         hospitals = new HashMap<>();
@@ -95,6 +96,16 @@ public class MapManager {
 
     public List<VoronoiZone> getZones() {
         return zones;
+    }
+
+    public void initializeAfterLoading() {
+        delaunay = new Delaunay();
+        voronoiService = new VoronoiService();
+
+        triangles = new ArrayList<>();
+        zones = new ArrayList<>();
+
+        recompute();
     }
 
 }
