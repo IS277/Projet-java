@@ -4,6 +4,7 @@ import java.util.Objects;
 public class Coordinate implements Serializable{
     private double latitude;
     private double longitude;
+    private static final long serialVersionUID = 1L;
 
     public Coordinate(double latitude, double longitude) {
         this.latitude = latitude;
