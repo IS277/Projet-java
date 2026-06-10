@@ -19,6 +19,8 @@ public class Hospital implements Serializable{
 
     private Set<HospitalServiceType> services;
 
+    private static final long serialVersionUID = 1L;
+
     public Hospital(
             String id,
             String name,
