@@ -456,7 +456,32 @@ public class CommandLineApp {
                     "Surface: "
                             + triangle.getSurface());
 
+            int minPatients = Integer.MAX_VALUE;
+            int maxPatients = 0;
+
+            for (Hospital hospital : manager.getHospitals().values()) {
+
+                if (triangle.containsHospital(hospital)) {
+
+                    int patientCount = hospital.getCurrentCapacity();
+
+                    System.out.println(
+                            hospital.getName()
+                                    + " patients: "
+                                    + patientCount);
+
+                    minPatients = Math.min(minPatients, patientCount);
+                    maxPatients = Math.max(maxPatients, patientCount);
+                }
+            }
+
+            System.out.println(
+                    "Patient imbalance: "
+                            + (maxPatients - minPatients));
+
             System.out.println();
+
+            
         }
     }
 
