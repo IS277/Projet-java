@@ -116,6 +116,23 @@ public class DelaunayTriangle {
         return false;
     }
 
+    public double getSurface() {
+        double ax = vertices[0].getLatitude();
+        double ay = vertices[0].getLongitude();
+
+        double bx = vertices[1].getLatitude();
+        double by = vertices[1].getLongitude();
+
+        double cx = vertices[2].getLatitude();
+        double cy = vertices[2].getLongitude();
+
+        return Math.abs(
+                ax * (by - cy)
+                        + bx * (cy - ay)
+                        + cx * (ay - by))
+                / 2.0;
+    }
+
     @Override
     public String toString() {
         return "Triangle[" + vertices[0] + ", " + vertices[1] + ", " + vertices[2] + "]";

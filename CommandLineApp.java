@@ -426,7 +426,14 @@ public class CommandLineApp {
         System.out.println("Delaunay triangles:");
 
         for (DelaunayTriangle triangle : manager.getTriangles()) {
+
             System.out.println(triangle);
+
+            System.out.println(
+                    "Surface: "
+                            + triangle.getSurface());
+
+            System.out.println();
         }
     }
 
