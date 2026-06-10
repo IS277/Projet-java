@@ -333,11 +333,15 @@ public class CommandLineApp {
             return;
         }
 
-        System.out.print("New latitude: ");
-        double latitude = Double.parseDouble(scanner.nextLine());
+        Double latitude = readDouble("New latitude: ");
+        if (latitude == null) {
+            return;
+        }
 
-        System.out.print("New longitude: ");
-        double longitude = Double.parseDouble(scanner.nextLine());
+        Double longitude = readDouble("New longitude: ");
+        if (longitude == null) {
+            return;
+        }
 
         manager.movePatient(
                 id,
