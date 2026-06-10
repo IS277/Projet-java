@@ -6,6 +6,8 @@ public abstract class Person implements Serializable{
     protected String id;
     protected String name;
     protected Coordinate position;
+    private static final long serialVersionUID = 1L;
+    
 
     public Person(String id, String name, Coordinate position) {
         this.id = id;
