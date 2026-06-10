@@ -132,14 +132,25 @@ public class CommandLineApp {
         System.out.print("Hospital name: ");
         String name = scanner.nextLine();
 
-        System.out.print("Latitude: ");
-        double latitude = Double.parseDouble(scanner.nextLine());
+        Double latitude = readDouble("Latitude: ");
+        if (latitude == null) {
+            return;
+        }
 
-        System.out.print("Longitude: ");
-        double longitude = Double.parseDouble(scanner.nextLine());
+        Double longitude = readDouble("Longitude: ");
+        if (longitude == null) {
+            return;
+        }
 
-        System.out.print("Max capacity: ");
-        int maxCapacity = Integer.parseInt(scanner.nextLine());
+        Integer maxCapacity = readInteger("Max capacity: ");
+        if (maxCapacity == null) {
+            return;
+        }
+
+        if (maxCapacity <= 0) {
+            System.out.println("Max capacity must be positive.");
+            return;
+        }
 
         Hospital hospital = new Hospital(
                 id,
@@ -571,6 +582,28 @@ public class CommandLineApp {
         } catch (Exception e) {
 
             System.out.println("Unable to load map.");
+        }
+    }
+
+    private Double readDouble(String message) {
+        System.out.print(message);
+
+        try {
+            return Double.parseDouble(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid number.");
+            return null;
+        }
+    }
+
+    private Integer readInteger(String message) {
+        System.out.print(message);
+
+        try {
+            return Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid integer.");
+            return null;
         }
     }
 }
