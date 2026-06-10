@@ -447,6 +447,9 @@ public class CommandLineApp {
                     "Density: "
                             + zone.getDensity());
 
+            System.out.println("Min distance: " + zone.getMinDistanceToHospital());
+            System.out.println("Max distance: " + zone.getMaxDistanceToHospital());
+
             System.out.println(
                     "Average distance: "
                             + zone.getAverageDistanceToHospital());

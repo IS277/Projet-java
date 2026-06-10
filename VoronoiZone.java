@@ -173,4 +173,42 @@ public class VoronoiZone implements Comparable<VoronoiZone> {
     public double getSurface() {
         return surface;
     }
+
+    public double getMinDistanceToHospital() {
+        if (patients.isEmpty()) {
+            return 0;
+        }
+
+        double minDistance = Double.MAX_VALUE;
+
+        for (Patient patient : patients) {
+            double distance = patient.getPosition()
+                    .distanceTo(hospital.getPosition());
+
+            if (distance < minDistance) {
+                minDistance = distance;
+            }
+        }
+
+        return minDistance;
+    }
+
+    public double getMaxDistanceToHospital() {
+        if (patients.isEmpty()) {
+            return 0;
+        }
+
+        double maxDistance = 0;
+
+        for (Patient patient : patients) {
+            double distance = patient.getPosition()
+                    .distanceTo(hospital.getPosition());
+
+            if (distance > maxDistance) {
+                maxDistance = distance;
+            }
+        }
+
+        return maxDistance;
+    }
 }

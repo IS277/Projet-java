@@ -1,5 +1,5 @@
-H1,Paris Hospital,10,20,100
-H2,City Hospital,100,200,50
-H3,North Hospital,80,40,80
-H4,West Hospital,30,150,70
-H5,South Hospital,150,80,90
+H1,A,0,0,100
+H2,B,100,0,100
+H3,C,0,100,100
+H4,D,100,100,100
+H5,Center,50,50,100
