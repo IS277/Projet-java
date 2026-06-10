@@ -255,11 +255,15 @@ public class CommandLineApp {
         System.out.print("Patient name: ");
         String name = scanner.nextLine();
 
-        System.out.print("Latitude: ");
-        double latitude = Double.parseDouble(scanner.nextLine());
+        Double latitude = readDouble("Latitude: ");
+        if (latitude == null) {
+            return;
+        }
 
-        System.out.print("Longitude: ");
-        double longitude = Double.parseDouble(scanner.nextLine());
+        Double longitude = readDouble("Longitude: ");
+        if (longitude == null) {
+            return;
+        }
 
         System.out.println("Required service:");
         System.out.println("1 - GENERAL");
