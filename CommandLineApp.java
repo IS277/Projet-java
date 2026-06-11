@@ -32,7 +32,7 @@ public class CommandLineApp {
             System.out.println("8 - Remove patient");
             System.out.println("9 - Move patient");
             System.out.println("10 - Show patients");
-            System.out.println("11 - Assign patient");
+            System.out.println("11 - Show assigned hospital");
             System.out.println("12 - Add random patients");
             System.out.println("13 - Import hospitals from CSV");
             System.out.println("14 - Save map");
@@ -86,7 +86,7 @@ public class CommandLineApp {
                     break;
 
                 case "11":
-                    assignPatient();
+                    showAssignedHospital();
                     break;
 
                 case "12":
@@ -386,7 +386,7 @@ public class CommandLineApp {
         }
     }
 
-    private void assignPatient() {
+    private void showAssignedHospital() {
 
         System.out.print("Patient id: ");
         String id = scanner.nextLine();
@@ -402,15 +402,12 @@ public class CommandLineApp {
 
         Hospital hospital = assignmentService.findBestHospital(
                 patient,
-                new ArrayList<>(
-                        manager.getHospitals().values()));
+                new ArrayList<>(manager.getHospitals().values()));
 
         if (hospital == null) {
             System.out.println("No compatible hospital found.");
             return;
         }
-
-        hospital.admitPatient();
 
         System.out.println();
         System.out.println("Patient : "
