@@ -43,6 +43,7 @@ public class CommandLineApp {
             System.out.println("18 - Show ASCII Delaunay map");
             System.out.println("19 - Show ASCII Delaunay map with patients");
             System.out.println("20 - Show ASCII Voronoi edges map");
+            System.out.println("21 - Show ASCII Voronoi map with patients");
             System.out.println("0 - Quit");
 
             System.out.print("Choice: ");
@@ -128,6 +129,10 @@ public class CommandLineApp {
 
                 case "20":
                     showAsciiVoronoi();
+                    break;
+
+                case "21":
+                    showAsciiVoronoiWithPatients();
                     break;
 
                 case "0":
@@ -820,6 +825,21 @@ public class CommandLineApp {
 
         AsciiMapRenderer.drawHospitalsAndVoronoi(
                 new ArrayList<>(manager.getHospitals().values()),
+                manager.getVoronoiEdges(),
+                80,
+                25);
+    }
+
+    private void showAsciiVoronoiWithPatients() {
+
+        if (manager.getHospitals().isEmpty()) {
+            System.out.println("No hospitals available.");
+            return;
+        }
+
+        AsciiMapRenderer.drawHospitalsPatientsAndVoronoi(
+                new ArrayList<>(manager.getHospitals().values()),
+                new ArrayList<>(manager.getPatients().values()),
                 manager.getVoronoiEdges(),
                 80,
                 25);
