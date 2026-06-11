@@ -482,17 +482,24 @@ public class CommandLineApp {
                     "Surface: "
                             + triangle.getSurface());
 
-            System.out.println(
-                    "Distance AB: "
-                            + triangle.getDistanceAB());
+            Coordinate[] vertices = triangle.getVertices();
 
-            System.out.println(
-                    "Distance BC: "
-                            + triangle.getDistanceBC());
+            Hospital hospitalA = findHospitalByPosition(vertices[0]);
+            Hospital hospitalB = findHospitalByPosition(vertices[1]);
+            Hospital hospitalC = findHospitalByPosition(vertices[2]);
 
-            System.out.println(
-                    "Distance CA: "
-                            + triangle.getDistanceCA());
+            String nameA = hospitalA != null ? hospitalA.getName() : "A";
+            String nameB = hospitalB != null ? hospitalB.getName() : "B";
+            String nameC = hospitalC != null ? hospitalC.getName() : "C";
+
+            System.out.println("Distance " + nameA + " - " + nameB + ": "
+                    + triangle.getDistanceAB());
+
+            System.out.println("Distance " + nameB + " - " + nameC + ": "
+                    + triangle.getDistanceBC());
+
+            System.out.println("Distance " + nameC + " - " + nameA + ": "
+                    + triangle.getDistanceCA());
 
             int minPatients = Integer.MAX_VALUE;
             int maxPatients = 0;
@@ -679,6 +686,17 @@ public class CommandLineApp {
             System.out.println("Invalid integer.");
             return null;
         }
+    }
+
+    private Hospital findHospitalByPosition(Coordinate position) {
+
+        for (Hospital hospital : manager.getHospitals().values()) {
+            if (hospital.getPosition().equals(position)) {
+                return hospital;
+            }
+        }
+
+        return null;
     }
 
 }
