@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -37,6 +38,8 @@ public class CommandLineApp {
             System.out.println("13 - Import hospitals from CSV");
             System.out.println("14 - Save map");
             System.out.println("15 - Load map");
+            System.out.println("16 - Inspect triangle");
+            System.out.println("17 - Inspect Voronoi zone");
             System.out.println("0 - Quit");
 
             System.out.print("Choice: ");
@@ -103,6 +106,13 @@ public class CommandLineApp {
 
                 case "15":
                     loadMap();
+                    break;
+                case "16":
+                    inspectTriangle();
+                    break;
+
+                case "17":
+                    inspectZone();
                     break;
 
                 case "0":
@@ -696,6 +706,70 @@ public class CommandLineApp {
         }
 
         return null;
+    }
+
+    private void inspectTriangle() {
+
+        List<DelaunayTriangle> triangles = manager.getTriangles();
+
+        if (triangles.isEmpty()) {
+            System.out.println("No triangle available.");
+            return;
+        }
+
+        for (int i = 0; i < triangles.size(); i++) {
+            System.out.println(i + " - " + triangles.get(i));
+        }
+
+        Integer index = readInteger("Triangle index: ");
+
+        if (index == null || index < 0 || index >= triangles.size()) {
+            System.out.println("Invalid triangle index.");
+            return;
+        }
+
+        DelaunayTriangle triangle = triangles.get(index);
+
+        System.out.println();
+        System.out.println(triangle);
+        System.out.println("Surface: " + triangle.getSurface());
+        System.out.println("Circumcenter: " + triangle.getCircumcenter());
+
+        System.out.println("Distance AB: " + triangle.getDistanceAB());
+        System.out.println("Distance BC: " + triangle.getDistanceBC());
+        System.out.println("Distance CA: " + triangle.getDistanceCA());
+    }
+
+    private void inspectZone() {
+
+        List<VoronoiZone> zones = manager.getZones();
+
+        if (zones.isEmpty()) {
+            System.out.println("No Voronoi zone available.");
+            return;
+        }
+
+        for (int i = 0; i < zones.size(); i++) {
+            System.out.println(i + " - " + zones.get(i).getHospital().getName());
+        }
+
+        Integer index = readInteger("Zone index: ");
+
+        if (index == null || index < 0 || index >= zones.size()) {
+            System.out.println("Invalid zone index.");
+            return;
+        }
+
+        VoronoiZone zone = zones.get(index);
+
+        System.out.println();
+        System.out.println(zone);
+        System.out.println("Surface: " + zone.getSurface());
+        System.out.println("Patients: " + zone.getPatientCount());
+        System.out.println("Density: " + zone.getDensity());
+        System.out.println("Min distance: " + zone.getMinDistanceToHospital());
+        System.out.println("Max distance: " + zone.getMaxDistanceToHospital());
+        System.out.println("Average distance: " + zone.getAverageDistanceToHospital());
     }
 
 }
