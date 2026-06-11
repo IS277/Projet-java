@@ -88,6 +88,8 @@ public class MapManager implements Serializable {
                 hospitalList,
                 new ArrayList<>(patients.values()),
                 triangles);
+
+        recomputeAssignments();
     }
 
     public List<DelaunayTriangle> getTriangles() {
@@ -106,6 +108,25 @@ public class MapManager implements Serializable {
         zones = new ArrayList<>();
 
         recompute();
+    }
+
+    public void recomputeAssignments() {
+
+        for (Hospital hospital : hospitals.values()) {
+            hospital.updateCapacity(0);
+        }
+
+        AssignmentService assignmentService = new AssignmentService();
+
+        for (Patient patient : patients.values()) {
+            Hospital hospital = assignmentService.findBestHospital(
+                    patient,
+                    new ArrayList<>(hospitals.values()));
+
+            if (hospital != null) {
+                hospital.admitPatient();
+            }
+        }
     }
 
 }

@@ -128,6 +128,10 @@ public class CommandLineApp {
             return;
 
         }
+        if (manager.getHospitals().containsKey(id)) {
+            System.out.println("Hospital id already exists.");
+            return;
+        }
 
         System.out.print("Hospital name: ");
         String name = scanner.nextLine();
@@ -256,6 +260,11 @@ public class CommandLineApp {
 
         }
 
+        if (manager.getPatients().containsKey(id)) {
+            System.out.println("Patient id already exists.");
+            return;
+        }
+
         System.out.print("Patient name: ");
         String name = scanner.nextLine();
 
@@ -305,7 +314,25 @@ public class CommandLineApp {
 
         manager.addPatient(patient);
 
-        System.out.println("Patient added.");
+        AssignmentService assignmentService = new AssignmentService();
+
+        Hospital hospital = assignmentService.findBestHospital(
+                patient,
+                new ArrayList<>(manager.getHospitals().values()));
+
+        if (hospital != null) {
+
+
+            System.out.println("Patient added.");
+
+            System.out.println("Assigned hospital: "
+                    + hospital.getName());
+
+        } else {
+
+            System.out.println("Patient added.");
+            System.out.println("No compatible hospital found.");
+        }
     }
 
     private void removePatient() {
@@ -481,7 +508,6 @@ public class CommandLineApp {
 
             System.out.println();
 
-            
         }
     }
 
@@ -643,4 +669,6 @@ public class CommandLineApp {
             return null;
         }
     }
+
+    
 }
