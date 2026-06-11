@@ -449,11 +449,15 @@ public class CommandLineApp {
                 double latitude = Math.random() * 500;
                 double longitude = Math.random() * 500;
 
+                HospitalServiceType[] services = HospitalServiceType.values();
+
+                HospitalServiceType service = services[(int) (Math.random() * services.length)];
+
                 Patient patient = new Patient(
                         id,
                         name,
                         new Coordinate(latitude, longitude),
-                        HospitalServiceType.GENERAL);
+                        service);
 
                 manager.addPatient(patient);
             }
