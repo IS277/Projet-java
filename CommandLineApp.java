@@ -587,7 +587,7 @@ public class CommandLineApp {
 
                 String[] data = line.split(",");
 
-                if (data.length < 5) {
+                if (data.length < 6) {
                     continue;
                 }
 
@@ -599,6 +599,8 @@ public class CommandLineApp {
                 double longitude = Double.parseDouble(data[3].trim());
 
                 int maxCapacity = Integer.parseInt(data[4].trim());
+                HospitalServiceType service = HospitalServiceType.valueOf(
+                        data[5].trim().toUpperCase());
 
                 Hospital hospital = new Hospital(
                         id,
@@ -608,8 +610,7 @@ public class CommandLineApp {
                                 longitude),
                         maxCapacity);
 
-                hospital.addService(
-                        HospitalServiceType.GENERAL);
+                hospital.addService(service);
 
                 manager.addHospital(hospital);
             }
