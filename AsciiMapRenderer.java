@@ -6,8 +6,7 @@ public class AsciiMapRenderer {
             List<Hospital> hospitals,
             List<DelaunayTriangle> triangles,
             int width,
-            int height
-    ) {
+            int height) {
         char[][] grid = new char[height][width];
 
         for (int y = 0; y < height; y++) {
@@ -63,8 +62,7 @@ public class AsciiMapRenderer {
             double maxX,
             double maxY,
             int width,
-            int height
-    ) {
+            int height) {
         int x1 = toGridX(a, maxX, width);
         int y1 = toGridY(a, maxY, height);
         int x2 = toGridX(b, maxX, width);
@@ -108,5 +106,78 @@ public class AsciiMapRenderer {
     private static int toGridY(Coordinate coordinate, double maxY, int height) {
         int y = (int) Math.round((coordinate.getLongitude() / maxY) * (height - 1));
         return height - 1 - y;
+    }
+
+    public static void drawHospitalsPatientsAndDelaunay(
+            List<Hospital> hospitals,
+            List<Patient> patients,
+            List<DelaunayTriangle> triangles,
+            int width,
+            int height) {
+        char[][] grid = new char[height][width];
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                grid[y][x] = '.';
+            }
+        }
+
+        double maxX = 0;
+        double maxY = 0;
+
+        for (Hospital hospital : hospitals) {
+            maxX = Math.max(maxX, hospital.getPosition().getLatitude());
+            maxY = Math.max(maxY, hospital.getPosition().getLongitude());
+        }
+
+        for (Patient patient : patients) {
+            maxX = Math.max(maxX, patient.getPosition().getLatitude());
+            maxY = Math.max(maxY, patient.getPosition().getLongitude());
+        }
+
+        for (DelaunayTriangle triangle : triangles) {
+            Coordinate[] vertices = triangle.getVertices();
+
+            drawLine(grid, vertices[0], vertices[1], maxX, maxY, width, height);
+            drawLine(grid, vertices[1], vertices[2], maxX, maxY, width, height);
+            drawLine(grid, vertices[2], vertices[0], maxX, maxY, width, height);
+        }
+
+        for (Patient patient : patients) {
+            int x = toGridX(patient.getPosition(), maxX, width);
+            int y = toGridY(patient.getPosition(), maxY, height);
+
+            grid[y][x] = 'P';
+        }
+
+        for (int i = 0; i < hospitals.size(); i++) {
+            Hospital hospital = hospitals.get(i);
+
+            int x = toGridX(hospital.getPosition(), maxX, width);
+            int y = toGridY(hospital.getPosition(), maxY, height);
+
+            grid[y][x] = (char) ('1' + i);
+        }
+
+        printGrid(grid);
+
+        System.out.println();
+        System.out.println("Legend:");
+        System.out.println("* = Delaunay edge");
+        System.out.println("P = patient");
+
+        for (int i = 0; i < hospitals.size(); i++) {
+            System.out.println((i + 1) + " = " + hospitals.get(i).getName()
+                    + " " + hospitals.get(i).getPosition());
+        }
+    }
+
+    private static void printGrid(char[][] grid) {
+        for (int y = 0; y < grid.length; y++) {
+            for (int x = 0; x < grid[y].length; x++) {
+                System.out.print(grid[y][x]);
+            }
+            System.out.println();
+        }
     }
 }

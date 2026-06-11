@@ -41,6 +41,7 @@ public class CommandLineApp {
             System.out.println("16 - Inspect triangle");
             System.out.println("17 - Inspect Voronoi zone");
             System.out.println("18 - Show ASCII Delaunay map");
+            System.out.println("19 - Show ASCII Delaunay map with patients");
             System.out.println("0 - Quit");
 
             System.out.print("Choice: ");
@@ -118,6 +119,10 @@ public class CommandLineApp {
 
                 case "18":
                     showAsciiDelaunay();
+                    break;
+
+                case "19":
+                    showAsciiDelaunayWithPatients();
                     break;
 
                 case "0":
@@ -453,8 +458,8 @@ public class CommandLineApp {
 
                 String id = "R" + index;
                 String name = "RandomPatient" + index;
-                double latitude = Math.random() * 500;
-                double longitude = Math.random() * 500;
+                double latitude = Math.random() * 100;
+                double longitude = Math.random() * 100;
 
                 HospitalServiceType[] services = HospitalServiceType.values();
 
@@ -781,6 +786,21 @@ public class CommandLineApp {
 
         AsciiMapRenderer.drawHospitalsAndDelaunay(
                 new ArrayList<>(manager.getHospitals().values()),
+                manager.getTriangles(),
+                80,
+                25);
+    }
+
+    private void showAsciiDelaunayWithPatients() {
+
+        if (manager.getHospitals().isEmpty()) {
+            System.out.println("No hospitals available.");
+            return;
+        }
+
+        AsciiMapRenderer.drawHospitalsPatientsAndDelaunay(
+                new ArrayList<>(manager.getHospitals().values()),
+                new ArrayList<>(manager.getPatients().values()),
                 manager.getTriangles(),
                 80,
                 25);
