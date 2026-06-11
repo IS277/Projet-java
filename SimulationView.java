@@ -7,6 +7,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class SimulationView {
 
@@ -14,6 +15,9 @@ public class SimulationView {
     private final TextArea log = new TextArea();
     private int pid = 1;
     private final Random rng = new Random();
+    private Consumer<Patient> onPatientPlaced;
+
+    public void setOnPatientPlaced(Consumer<Patient> cb) { this.onPatientPlaced = cb; }
 
     public SimulationView(List<Hospital> hospitals) {
         this.hospitals = hospitals;
@@ -40,7 +44,7 @@ public class SimulationView {
         btnFive.setOnAction(e -> { for (int i = 0; i < 5; i++) addPatient(randomService()); });
         btnClear.setOnAction(e -> log.clear());
 
-        // Panneau statut hôpitaux
+        // Hospital status panel
         VBox statusBox = new VBox(6);
         statusBox.setPadding(new Insets(10));
         statusBox.setPrefWidth(210);
@@ -63,7 +67,7 @@ public class SimulationView {
     }
 
     private void addPatient(HospitalServiceType svc) {
-        Patient p = new Patient("P" + pid, "Patient " + pid,
+        Patient p = new Patient("SIM" + pid, "Sim-" + pid,
                 new Coordinate(5 + rng.nextDouble() * 150, 5 + rng.nextDouble() * 230), svc);
         pid++;
         Hospital best = new AssignmentService().findBestHospital(p, hospitals);
@@ -75,6 +79,7 @@ public class SimulationView {
         } else {
             log.appendText(p.getName() + " → aucun hôpital disponible pour " + svc.name() + "\n");
         }
+        if (onPatientPlaced != null) onPatientPlaced.accept(p);
     }
 
     private Label hospitalStatus(Hospital h) {
