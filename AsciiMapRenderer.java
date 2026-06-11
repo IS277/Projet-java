@@ -180,4 +180,66 @@ public class AsciiMapRenderer {
             System.out.println();
         }
     }
+
+    public static void drawHospitalsAndVoronoi(
+            List<Hospital> hospitals,
+            List<VoronoiEdge> edges,
+            int width,
+            int height) {
+
+        char[][] grid = new char[height][width];
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                grid[y][x] = '.';
+            }
+        }
+
+        double maxX = 0;
+        double maxY = 0;
+
+        for (Hospital hospital : hospitals) {
+            maxX = Math.max(maxX, hospital.getPosition().getLatitude());
+            maxY = Math.max(maxY, hospital.getPosition().getLongitude());
+        }
+
+        for (VoronoiEdge edge : edges) {
+            maxX = Math.max(maxX, edge.getStart().getLatitude());
+            maxX = Math.max(maxX, edge.getEnd().getLatitude());
+
+            maxY = Math.max(maxY, edge.getStart().getLongitude());
+            maxY = Math.max(maxY, edge.getEnd().getLongitude());
+        }
+
+        for (VoronoiEdge edge : edges) {
+            drawLine(
+                    grid,
+                    edge.getStart(),
+                    edge.getEnd(),
+                    maxX,
+                    maxY,
+                    width,
+                    height);
+        }
+
+        for (int i = 0; i < hospitals.size(); i++) {
+            Hospital hospital = hospitals.get(i);
+
+            int x = toGridX(hospital.getPosition(), maxX, width);
+            int y = toGridY(hospital.getPosition(), maxY, height);
+
+            grid[y][x] = (char) ('1' + i);
+        }
+
+        printGrid(grid);
+
+        System.out.println();
+        System.out.println("Legend:");
+        System.out.println("* = Voronoi edge");
+
+        for (int i = 0; i < hospitals.size(); i++) {
+            System.out.println((i + 1) + " = " + hospitals.get(i).getName()
+                    + " " + hospitals.get(i).getPosition());
+        }
+    }
 }

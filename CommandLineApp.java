@@ -42,6 +42,7 @@ public class CommandLineApp {
             System.out.println("17 - Inspect Voronoi zone");
             System.out.println("18 - Show ASCII Delaunay map");
             System.out.println("19 - Show ASCII Delaunay map with patients");
+            System.out.println("20 - Show ASCII Voronoi edges map");
             System.out.println("0 - Quit");
 
             System.out.print("Choice: ");
@@ -123,6 +124,10 @@ public class CommandLineApp {
 
                 case "19":
                     showAsciiDelaunayWithPatients();
+                    break;
+
+                case "20":
+                    showAsciiVoronoi();
                     break;
 
                 case "0":
@@ -802,6 +807,20 @@ public class CommandLineApp {
                 new ArrayList<>(manager.getHospitals().values()),
                 new ArrayList<>(manager.getPatients().values()),
                 manager.getTriangles(),
+                80,
+                25);
+    }
+
+    private void showAsciiVoronoi() {
+
+        if (manager.getHospitals().isEmpty()) {
+            System.out.println("No hospitals available.");
+            return;
+        }
+
+        AsciiMapRenderer.drawHospitalsAndVoronoi(
+                new ArrayList<>(manager.getHospitals().values()),
+                manager.getVoronoiEdges(),
                 80,
                 25);
     }

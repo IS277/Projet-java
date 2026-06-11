@@ -16,6 +16,8 @@ public class MapManager implements Serializable {
 
     private transient List<VoronoiZone> zones;
 
+    private transient List<VoronoiEdge> voronoiEdges;
+
     public MapManager() {
         hospitals = new HashMap<>();
         patients = new HashMap<>();
@@ -25,6 +27,7 @@ public class MapManager implements Serializable {
 
         triangles = new ArrayList<>();
         zones = new ArrayList<>();
+        voronoiEdges = new ArrayList<>();
     }
 
     public void addHospital(Hospital hospital) {
@@ -89,6 +92,8 @@ public class MapManager implements Serializable {
                 new ArrayList<>(patients.values()),
                 triangles);
 
+        voronoiEdges = voronoiService.getVoronoiEdges(triangles);
+
         recomputeAssignments();
     }
 
@@ -103,7 +108,7 @@ public class MapManager implements Serializable {
     public void initializeAfterLoading() {
         delaunay = new Delaunay();
         voronoiService = new VoronoiService();
-
+        voronoiEdges = new ArrayList<>();
         triangles = new ArrayList<>();
         zones = new ArrayList<>();
 
@@ -136,6 +141,10 @@ public class MapManager implements Serializable {
         return assignmentService.findBestHospital(
                 patient,
                 new ArrayList<>(hospitals.values()));
+    }
+
+    public List<VoronoiEdge> getVoronoiEdges() {
+        return voronoiEdges;
     }
 
 }
