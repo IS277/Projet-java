@@ -322,7 +322,6 @@ public class CommandLineApp {
 
         if (hospital != null) {
 
-
             System.out.println("Patient added.");
 
             System.out.println("Assigned hospital: "
@@ -482,6 +481,18 @@ public class CommandLineApp {
             System.out.println(
                     "Surface: "
                             + triangle.getSurface());
+
+            System.out.println(
+                    "Distance AB: "
+                            + triangle.getDistanceAB());
+
+            System.out.println(
+                    "Distance BC: "
+                            + triangle.getDistanceBC());
+
+            System.out.println(
+                    "Distance CA: "
+                            + triangle.getDistanceCA());
 
             int minPatients = Integer.MAX_VALUE;
             int maxPatients = 0;
@@ -670,5 +681,4 @@ public class CommandLineApp {
         }
     }
 
-    
 }

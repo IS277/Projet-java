@@ -133,6 +133,18 @@ public class DelaunayTriangle {
                 / 2.0;
     }
 
+    public double getDistanceAB() {
+        return vertices[0].distanceTo(vertices[1]);
+    }
+
+    public double getDistanceBC() {
+        return vertices[1].distanceTo(vertices[2]);
+    }
+
+    public double getDistanceCA() {
+        return vertices[2].distanceTo(vertices[0]);
+    }
+
     @Override
     public String toString() {
         return "Triangle[" + vertices[0] + ", " + vertices[1] + ", " + vertices[2] + "]";
