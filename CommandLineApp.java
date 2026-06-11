@@ -40,6 +40,7 @@ public class CommandLineApp {
             System.out.println("15 - Load map");
             System.out.println("16 - Inspect triangle");
             System.out.println("17 - Inspect Voronoi zone");
+            System.out.println("18 - Show ASCII Delaunay map");
             System.out.println("0 - Quit");
 
             System.out.print("Choice: ");
@@ -113,6 +114,10 @@ public class CommandLineApp {
 
                 case "17":
                     inspectZone();
+                    break;
+
+                case "18":
+                    showAsciiDelaunay();
                     break;
 
                 case "0":
@@ -770,6 +775,15 @@ public class CommandLineApp {
         System.out.println("Min distance: " + zone.getMinDistanceToHospital());
         System.out.println("Max distance: " + zone.getMaxDistanceToHospital());
         System.out.println("Average distance: " + zone.getAverageDistanceToHospital());
+    }
+
+    private void showAsciiDelaunay() {
+
+        AsciiMapRenderer.drawHospitalsAndDelaunay(
+                new ArrayList<>(manager.getHospitals().values()),
+                manager.getTriangles(),
+                80,
+                25);
     }
 
 }
