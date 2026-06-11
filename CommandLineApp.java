@@ -481,6 +481,11 @@ public class CommandLineApp {
             System.out.println(
                     "Surface: "
                             + triangle.getSurface());
+            Coordinate center = triangle.getCircumcenter();
+
+            System.out.println(
+                    "Circumcenter: "
+                            + center);
 
             Coordinate[] vertices = triangle.getVertices();
 
