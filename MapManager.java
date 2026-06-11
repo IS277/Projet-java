@@ -129,4 +129,13 @@ public class MapManager implements Serializable {
         }
     }
 
+    public Hospital getAssignedHospital(Patient patient) {
+
+        AssignmentService assignmentService = new AssignmentService();
+
+        return assignmentService.findBestHospital(
+                patient,
+                new ArrayList<>(hospitals.values()));
+    }
+
 }

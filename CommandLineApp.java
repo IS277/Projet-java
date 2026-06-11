@@ -314,11 +314,7 @@ public class CommandLineApp {
 
         manager.addPatient(patient);
 
-        AssignmentService assignmentService = new AssignmentService();
-
-        Hospital hospital = assignmentService.findBestHospital(
-                patient,
-                new ArrayList<>(manager.getHospitals().values()));
+        Hospital hospital = manager.getAssignedHospital(patient);
 
         if (hospital != null) {
 
@@ -398,11 +394,7 @@ public class CommandLineApp {
             return;
         }
 
-        AssignmentService assignmentService = new AssignmentService();
-
-        Hospital hospital = assignmentService.findBestHospital(
-                patient,
-                new ArrayList<>(manager.getHospitals().values()));
+        Hospital hospital = manager.getAssignedHospital(patient);
 
         if (hospital == null) {
             System.out.println("No compatible hospital found.");
