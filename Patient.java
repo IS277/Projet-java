@@ -16,10 +16,6 @@ public class Patient extends Person {
         return requiredService;
     }
 
-    public void setRequiredService(HospitalServiceType requiredService) {
-        this.requiredService = requiredService;
-    }
-
     @Override
     public String toString() {
         return "Patient{" +
