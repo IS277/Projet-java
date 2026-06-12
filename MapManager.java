@@ -121,10 +121,9 @@ public class MapManager implements Serializable {
             hospital.updateCapacity(0);
         }
 
-        AssignmentService assignmentService = new AssignmentService();
-
+        
         for (Patient patient : patients.values()) {
-            Hospital hospital = assignmentService.findBestHospital(
+            Hospital hospital = AssignmentService.findBestHospital(
                     patient,
                     new ArrayList<>(hospitals.values()));
 
@@ -136,9 +135,7 @@ public class MapManager implements Serializable {
 
     public Hospital getAssignedHospital(Patient patient) {
 
-        AssignmentService assignmentService = new AssignmentService();
-
-        return assignmentService.findBestHospital(
+        return AssignmentService.findBestHospital(
                 patient,
                 new ArrayList<>(hospitals.values()));
     }

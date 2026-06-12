@@ -2,8 +2,8 @@ import java.util.List;
 
 public class AssignmentService {
 
-    // Question : trouve l'hôpital le plus adapté pour un patient
-    public Hospital findBestHospital(
+    // Static car la méthode ne dépend d'aucun attribut de la classe.
+    public static Hospital findBestHospital(
             Patient patient,
             List<Hospital> hospitals
     ) {

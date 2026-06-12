@@ -6,6 +6,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+
+import java.lang.classfile.Label;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -70,7 +72,9 @@ public class SimulationView {
         Patient p = new Patient("SIM" + pid, "Sim-" + pid,
                 new Coordinate(5 + rng.nextDouble() * 150, 5 + rng.nextDouble() * 230), svc);
         pid++;
-        Hospital best = new AssignmentService().findBestHospital(p, hospitals);
+        Hospital best = AssignmentService.findBestHospital(
+        p,
+        hospitals);
         if (best != null) {
             log.appendText(String.format("%-12s → %-18s  dist=%.1f  sat=%.0f%%%n",
                     p.getName(), best.getName(),

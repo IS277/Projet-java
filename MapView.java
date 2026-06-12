@@ -12,7 +12,10 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.input.MouseButton;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
+import java.beans.EventHandler;
 import java.io.*;
+import java.lang.classfile.Label;
 import java.util.*;
 
 public class MapView {
@@ -90,7 +93,7 @@ public class MapView {
                 refreshEdges(); drawMap();
             } else if (draggedPatient != null) {
                 map.movePatient(draggedPatient.getId(), new Coordinate(screenToLat(e.getY()), screenToLon(e.getX())));
-                Hospital best = new AssignmentService().findBestHospital(
+                Hospital best = AssignmentService.findBestHospital(
                         draggedPatient, new ArrayList<>(map.getHospitals().values()));
                 if (best != null) assignments.put(draggedPatient, best);
                 refreshEdges(); drawMap();
@@ -157,7 +160,7 @@ public class MapView {
                        SimulationView sv = new SimulationView(new ArrayList<>(map.getHospitals().values()));
                        sv.setOnPatientPlaced(p -> {
                            map.addPatient(p);
-                           Hospital best = new AssignmentService().findBestHospital(
+                           Hospital best = AssignmentService.findBestHospital(
                                    p, new ArrayList<>(map.getHospitals().values()));
                            if (best != null) { assignments.put(p, best); best.admitPatient(); }
                            refreshEdges(); drawMap();
@@ -274,7 +277,7 @@ public class MapView {
         Patient p = new Patient("P"+id, rawName.isBlank() ? "P"+id : rawName,
                 new Coordinate(lat, lon), svcCombo.getValue());
         map.addPatient(p);
-        Hospital best = new AssignmentService().findBestHospital(
+        Hospital best = AssignmentService.findBestHospital(
                 p, new ArrayList<>(map.getHospitals().values()));
         if (best != null) {
             assignments.put(p, best);
