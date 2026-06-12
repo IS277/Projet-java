@@ -28,6 +28,12 @@ public class Itinerary {
         System.out.println("Total distance: " + totalDistance);
     }
 
-    public List<Coordinate> getWaypoints()  { return waypoints; }
-    public double getTotalDistance()        { return totalDistance; }
+    
+
+    public List<Coordinate> getWaypoints(){
+        return waypoints;
+    }
+    public double getTotalDistance(){
+        return totalDistance;
+    }
 }
