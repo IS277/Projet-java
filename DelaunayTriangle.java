@@ -7,12 +7,10 @@ import java.util.List;
 public class DelaunayTriangle {
 
     private Coordinate[] vertices;
-    private List<DelaunayTriangle> adjacentTriangles;
 
     /** Creates a triangle from three coordinates. */
     public DelaunayTriangle(Coordinate a, Coordinate b, Coordinate c) {
         this.vertices = new Coordinate[] { a, b, c };
-        this.adjacentTriangles = new ArrayList<>();
     }
 
     /** Returns true if the given coordinate is inside the circumcircle. */
@@ -52,14 +50,6 @@ public class DelaunayTriangle {
 
     public Coordinate[] getVertices() {
         return vertices;
-    }
-
-    public List<DelaunayTriangle> getAdjacentTriangles() {
-        return adjacentTriangles;
-    }
-
-    public void addAdjacentTriangle(DelaunayTriangle t) {
-        adjacentTriangles.add(t);
     }
 
     public Coordinate getCircumcenter() {
