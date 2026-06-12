@@ -100,12 +100,33 @@ public class AsciiMapRenderer {
     }
 
     private static int toGridX(Coordinate coordinate, double maxX, int width) {
-        return (int) Math.round((coordinate.getLatitude() / maxX) * (width - 1));
+        if (maxX == 0) {
+            return 0;
+        }
+
+        int x = (int) Math.round((coordinate.getLatitude() / maxX) * (width - 1));
+        return clamp(x, 0, width - 1);
     }
 
     private static int toGridY(Coordinate coordinate, double maxY, int height) {
+        if (maxY == 0) {
+            return height - 1;
+        }
+
         int y = (int) Math.round((coordinate.getLongitude() / maxY) * (height - 1));
-        return height - 1 - y;
+        return clamp(height - 1 - y, 0, height - 1);
+    }
+
+    private static int clamp(int value, int min, int max) {
+        if (value < min) {
+            return min;
+        }
+
+        if (value > max) {
+            return max;
+        }
+
+        return value;
     }
 
     public static void drawHospitalsPatientsAndDelaunay(

@@ -1,11 +1,9 @@
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.Objects;
 import java.io.Serializable;
 
-public class Hospital implements Serializable{
+public class Hospital implements Serializable {
 
     private String id;
 
@@ -46,17 +44,24 @@ public class Hospital implements Serializable{
         return currentCapacity >= maxCapacity;
     }
 
-    // Question : met à jour le nombre de patients présents
     public void updateCapacity(int currentCapacity) {
+        if (currentCapacity < 0) {
+            this.currentCapacity = 0;
+            return;
+        }
+
+        if (currentCapacity > maxCapacity) {
+            this.currentCapacity = maxCapacity;
+            return;
+        }
+
         this.currentCapacity = currentCapacity;
     }
 
-    // Question : ajoute un service médical disponible
     public void addService(HospitalServiceType service) {
         services.add(service);
     }
 
-    // Question : vérifie si un service existe
     public boolean hasService(HospitalServiceType service) {
         return services.contains(service);
     }
