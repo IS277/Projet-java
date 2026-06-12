@@ -1,5 +1,8 @@
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,14 +31,21 @@ public class VoronoiZone implements Comparable<VoronoiZone> {
     }
 
     public boolean contains(Coordinate c) {
-        int n = vertices.size();
+        // Sort from hospital position — it is guaranteed to be inside its own Voronoi cell
+        Coordinate ref = hospital.getPosition();
+        List<Coordinate> sorted = new ArrayList<>(vertices);
+        sorted.sort(Comparator.comparingDouble(v ->
+            Math.atan2(v.getLongitude() - ref.getLongitude(),
+                       v.getLatitude()  - ref.getLatitude())));
+
+        int n = sorted.size();
         boolean inside = false;
         double x = c.getLatitude();
         double y = c.getLongitude();
 
         for (int i = 0, j = n - 1; i < n; j = i++) {
-            double xi = vertices.get(i).getLatitude(), yi = vertices.get(i).getLongitude();
-            double xj = vertices.get(j).getLatitude(), yj = vertices.get(j).getLongitude();
+            double xi = sorted.get(i).getLatitude(), yi = sorted.get(i).getLongitude();
+            double xj = sorted.get(j).getLatitude(), yj = sorted.get(j).getLongitude();
 
             boolean intersect = ((yi > y) != (yj > y))
                     && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
@@ -194,21 +204,44 @@ public class VoronoiZone implements Comparable<VoronoiZone> {
     }
 
     public double getMaxDistanceToHospital() {
-        if (patients.isEmpty()) {
-            return 0;
-        }
-
+        if (patients.isEmpty()) return 0;
         double maxDistance = 0;
-
         for (Patient patient : patients) {
-            double distance = patient.getPosition()
-                    .distanceTo(hospital.getPosition());
-
-            if (distance > maxDistance) {
-                maxDistance = distance;
-            }
+            double d = patient.getPosition().distanceTo(hospital.getPosition());
+            if (d > maxDistance) maxDistance = d;
         }
-
         return maxDistance;
+    }
+
+    public double getStdDevDistanceToHospital() {
+        if (patients.size() < 2) return 0;
+        double avg = getAverageDistanceToHospital();
+        double sumSq = 0;
+        for (Patient p : patients)
+            sumSq += Math.pow(p.getPosition().distanceTo(hospital.getPosition()) - avg, 2);
+        return Math.sqrt(sumSq / patients.size());
+    }
+
+    public double getPerimeter() {
+        if (vertices.size() < 2) return 0;
+        Coordinate ref = hospital.getPosition();
+        List<Coordinate> sorted = new ArrayList<>(vertices);
+        sorted.sort(Comparator.comparingDouble(v ->
+            Math.atan2(v.getLongitude() - ref.getLongitude(),
+                       v.getLatitude()  - ref.getLatitude())));
+        double perim = 0;
+        for (int i = 0; i < sorted.size(); i++) {
+            Coordinate a = sorted.get(i);
+            Coordinate b = sorted.get((i + 1) % sorted.size());
+            perim += a.distanceTo(b);
+        }
+        return perim;
+    }
+
+    public Map<HospitalServiceType, Long> getPatientsByService() {
+        Map<HospitalServiceType, Long> counts = new EnumMap<>(HospitalServiceType.class);
+        for (Patient p : patients)
+            counts.merge(p.getRequiredService(), 1L, Long::sum);
+        return counts;
     }
 }

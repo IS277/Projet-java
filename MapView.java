@@ -231,11 +231,18 @@ public class MapView {
                 Coordinate wp = new Coordinate(screenToLat(my), screenToLon(mx));
                 VoronoiZone z = map.getZones().stream()
                         .filter(zn -> zn.contains(wp)).findFirst().orElse(null);
+                DelaunayTriangle t = findTriangle(wp);
                 if (z != null) {
-                    infoLabel.setText(zoneInfo(z));
+                    infoLabel.setText("Zone : " + z.getHospital().getName()
+                        + "\nPatients : " + z.getPatientCount()
+                        + "\nSurface : " + String.format("%.1f", z.getSurface())
+                        + "\nSaturation : " + String.format("%.0f%%", z.getHospital().getSaturationRate() * 100));
+                    new ZoneDetailView().show(z, map.getZones());
+                } else if (t != null) {
+                    infoLabel.setText(triangleInfo(t));
+                    new TriangleDetailView().show(t, assignments);
                 } else {
-                    DelaunayTriangle t = findTriangle(wp);
-                    infoLabel.setText(t != null ? triangleInfo(t) : "Click a hospital or zone.");
+                    infoLabel.setText("Click a hospital or zone.");
                 }
             }
         }
@@ -285,20 +292,57 @@ public class MapView {
         File f = picker("Import Hospitals","*.csv").showOpenDialog(stage);
         if (f == null) return;
         int n = 0;
-        try (BufferedReader br = new BufferedReader(new FileReader(f))) {
-            for (String line; (line = br.readLine()) != null; ) {
-                String[] p = line.trim().split(",");
-                if (p.length < 4 || line.startsWith("#")) continue;
+        List<String> errors = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"))) {
+            int lineNum = 0;
+            for (String raw; (raw = br.readLine()) != null; ) {
+                lineNum++;
+                // strip BOM if present on first line
+                String line = (lineNum == 1 && raw.startsWith("﻿")) ? raw.substring(1) : raw;
+                line = line.trim();
+                if (line.isEmpty() || line.startsWith("#")) continue;
+                String[] p = line.split(",");
                 try {
-                    Hospital h = new Hospital("H"+hid++, p[0].trim(),
-                            new Coordinate(Double.parseDouble(p[1]), Double.parseDouble(p[2])),
-                            Integer.parseInt(p[3]));
-                    h.addService(p.length >= 5 ? parseService(p[4]) : HospitalServiceType.GENERAL);
-                    map.addHospital(h); n++;
-                } catch (NumberFormatException ignored) {}
+                    String id, name;
+                    double lat, lon;
+                    int cap;
+                    HospitalServiceType svc;
+                    // Auto-detect format by checking if p[1] is numeric:
+                    //   p[1] numeric  → Name,lat,lon,cap[,svc]
+                    //   p[1] not num  → ID,Name,lat,lon,cap[,svc]
+                    if (p.length >= 4 && isNumeric(p[1].trim())) {
+                        // Name,lat,lon,cap[,svc]
+                        id   = "H" + hid;
+                        name = p[0].trim();
+                        lat  = Double.parseDouble(p[1].trim());
+                        lon  = Double.parseDouble(p[2].trim());
+                        cap  = Integer.parseInt(p[3].trim());
+                        svc  = p.length >= 5 ? parseService(p[4]) : HospitalServiceType.GENERAL;
+                    } else if (p.length >= 5 && isNumeric(p[2].trim())) {
+                        // ID,Name,lat,lon,cap[,svc]
+                        id   = p[0].trim();
+                        name = p[1].trim();
+                        lat  = Double.parseDouble(p[2].trim());
+                        lon  = Double.parseDouble(p[3].trim());
+                        cap  = Integer.parseInt(p[4].trim());
+                        svc  = p.length >= 6 ? parseService(p[5]) : HospitalServiceType.GENERAL;
+                    } else {
+                        errors.add("Ligne " + lineNum + " ignorée (trop peu de colonnes) : " + line);
+                        continue;
+                    }
+                    Hospital h = new Hospital(id, name, new Coordinate(lat, lon), cap);
+                    h.addService(svc);
+                    map.addHospital(h);
+                    hid++; n++;
+                } catch (Exception ex) {
+                    errors.add("Ligne " + lineNum + " : " + ex.getMessage());
+                }
             }
         } catch (IOException ex) { alert(ex.getMessage()); return; }
-        refreshEdges(); drawMap(); alert(n + " hospital(s) imported.");
+        refreshEdges(); drawMap();
+        String msg = n + " hôpital(s) importé(s).";
+        if (!errors.isEmpty()) msg += "\n\nLignes ignorées :\n" + String.join("\n", errors);
+        alert(msg);
     }
 
     // Save via MapPersistenceService (serializes the entire MapManager)
@@ -477,6 +521,11 @@ public class MapView {
         return String.format("%s | %d/%d (%.0f%%)\n%s", h.getName(),
                 h.getCurrentCapacity(), h.getMaxCapacity(), h.getSaturationRate()*100,
                 h.getServices().stream().map(Enum::name).reduce((a,b) -> a+", "+b).orElse(""));
+    }
+
+    private boolean isNumeric(String s) {
+        try { Double.parseDouble(s); return true; }
+        catch (NumberFormatException e) { return false; }
     }
 
     private HospitalServiceType parseService(String s) {
