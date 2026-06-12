@@ -22,7 +22,7 @@ public class MapView {
 
     // Model state — centralized in MapManager
     private MapManager               map         = new MapManager();
-    private final Map<Patient, Hospital> assignments = new LinkedHashMap<>();
+    private final java.util.Map<Patient, Hospital> assignments = new LinkedHashMap<>();
     private List<VoronoiEdge>        edges       = new ArrayList<>();
 
     // Control state
@@ -398,7 +398,7 @@ public class MapView {
             gc.setLineDashes(0);
         }
         gc.setStroke(Color.web("#7c3aed",0.5)); gc.setLineDashes(8,5);
-        for (Map.Entry<Patient,Hospital> e : assignments.entrySet())
+        for (java.util.Map.Entry<Patient,Hospital> e : assignments.entrySet())
             gc.strokeLine(sx(e.getKey()),sy(e.getKey()),sx(e.getValue()),sy(e.getValue()));
         gc.setLineDashes(0);
 
