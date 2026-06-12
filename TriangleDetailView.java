@@ -40,6 +40,8 @@ public class TriangleDetailView {
         // --- Sommets / Hôpitaux ---
         Label secH = section("Hôpitaux sommets");
         VBox hBox = new VBox(4);
+        long minPat = Long.MAX_VALUE, maxPat = Long.MIN_VALUE;
+        Hospital mostLoaded = null, leastLoaded = null;
         for (Coordinate vi : v) {
             Hospital h = findHospital(vi, assignments);
             if (h == null) {
@@ -53,7 +55,29 @@ public class TriangleDetailView {
                     h.getName(), cnt, sat));
             hl.setTextFill(sat >= 80 ? Color.RED : sat >= 50 ? Color.ORANGE : Color.GREEN);
             hBox.getChildren().add(hl);
+            if (cnt > maxPat) { maxPat = cnt; mostLoaded  = h; }
+            if (cnt < minPat) { minPat = cnt; leastLoaded = h; }
         }
+
+        // --- Déséquilibre ---
+        Label secD = section("Déséquilibre de charge");
+        long imbalance = (maxPat == Long.MIN_VALUE) ? 0 : maxPat - minPat;
+        String imbalanceStr = imbalance == 0 ? "Équilibré" :
+                String.format("%d patients d'écart", imbalance);
+        Label lblImbalance = row("Écart max/min", imbalanceStr);
+        lblImbalance.setTextFill(imbalance == 0 ? Color.GREEN
+                               : imbalance <= 5  ? Color.ORANGE : Color.RED);
+        Label lblMost  = mostLoaded  != null ? row("Plus chargé",  mostLoaded.getName()
+                + String.format(" (%d patients, %.0f%%)", maxPat, mostLoaded.getSaturationRate()*100)) : new Label();
+        Label lblLeast = leastLoaded != null && leastLoaded != mostLoaded
+                ? row("Moins chargé", leastLoaded.getName()
+                + String.format(" (%d patients, %.0f%%)", minPat, leastLoaded.getSaturationRate()*100)) : new Label();
+        String advice = imbalance > 10 ? "→ Transfert de patients conseillé vers " + (leastLoaded != null ? leastLoaded.getName() : "—")
+                      : imbalance > 5  ? "→ Déséquilibre modéré à surveiller"
+                      : "→ Répartition satisfaisante";
+        Label lblAdvice = new Label("  " + advice);
+        lblAdvice.setTextFill(imbalance > 10 ? Color.RED : imbalance > 5 ? Color.ORANGE : Color.GREEN);
+        lblAdvice.setWrapText(true);
 
         // --- Qualité géométrique ---
         Label secQ = section("Qualité géométrique");
@@ -76,12 +100,13 @@ public class TriangleDetailView {
                 title, new Separator(),
                 secGeo, surf, perim, aretes, circR, circC, compact, new Separator(),
                 secH, hBox, new Separator(),
+                secD, lblImbalance, lblMost, lblLeast, lblAdvice, new Separator(),
                 secQ, angMin, angMax, qual, new Separator(),
                 btnClose);
         root.setPadding(new Insets(20));
 
         stage.setTitle("Triangle de Delaunay");
-        stage.setScene(new Scene(root, 360, 460));
+        stage.setScene(new Scene(root, 360, 540));
         stage.setResizable(false);
         stage.show();
     }

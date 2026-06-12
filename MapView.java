@@ -55,6 +55,7 @@ public class MapView {
     private VoronoiZone hoveredZone   = null;
     private Patient   draggedPatient  = null;
     private Patient   selectedPatient = null;
+    private Set<VoronoiZone> neighborZones  = new HashSet<>();
     private Label     statusBar       = new Label("lat: —  lon: —");
 
     public void show() {
@@ -199,17 +200,20 @@ public class MapView {
                     // Right-click → remove patient
                     map.removePatient(clickedP.getId());
                     assignments.remove(clickedP);
-                    if (clickedP == selectedPatient) selectedPatient = null;
+                    if (clickedP == selectedPatient) { selectedPatient = null; neighborZones = new HashSet<>(); }
                     refreshEdges(); drawMap(); return;
                 } else {
-                    // Left-click → toggle selection and highlight assigned zone
+                    // Left-click → toggle selection, highlight assigned zone + neighbors
                     selectedPatient = (selectedPatient == clickedP) ? null : clickedP;
                     if (selectedPatient != null) {
                         Hospital h = assignments.get(selectedPatient);
+                        neighborZones = h != null ? getNeighborZones(h) : new HashSet<>();
                         infoLabel.setText("Patient : " + selectedPatient.getName()
                             + "\nService : " + selectedPatient.getRequiredService().name()
-                            + "\nHôpital : " + (h != null ? h.getName() : "—"));
+                            + "\nHôpital : " + (h != null ? h.getName() : "—")
+                            + "\nZones voisines : " + neighborZones.size());
                     } else {
+                        neighborZones = new HashSet<>();
                         infoLabel.setText("Click a hospital.");
                     }
                     drawMap(); return;
@@ -389,12 +393,16 @@ public class MapView {
             double[] xs = v.stream().mapToDouble(this::sx).toArray();
             double[] ys = v.stream().mapToDouble(this::sy).toArray();
             Color c = satColor(z.getHospital().getSaturationRate());
-            boolean isSelZone = selectedPatient != null && assignments.get(selectedPatient) == z.getHospital();
-            boolean isHovZone = z == hoveredZone;
-            double alpha = isSelZone ? 0.45 : isHovZone ? 0.35 : 0.18;
-            gc.setFill(c.deriveColor(0,1,1,alpha)); gc.fillPolygon(xs,ys,v.size());
-            gc.setStroke(isSelZone ? Color.web("#f59e0b",0.9) : c.deriveColor(0,1,0.8,0.5));
-            gc.setLineWidth(isSelZone ? 2.5 : 1); gc.strokePolygon(xs,ys,v.size());
+            boolean isSelZone  = selectedPatient != null && assignments.get(selectedPatient) == z.getHospital();
+            boolean isNeighbor = !isSelZone && neighborZones.contains(z);
+            boolean isHovZone  = z == hoveredZone;
+            double alpha = isSelZone ? 0.45 : isNeighbor ? 0.35 : isHovZone ? 0.35 : 0.18;
+            Color fill = isNeighbor ? Color.web("#fb923c", alpha) : c.deriveColor(0,1,1,alpha);
+            gc.setFill(fill); gc.fillPolygon(xs,ys,v.size());
+            gc.setStroke(isSelZone  ? Color.web("#f59e0b",0.9)
+                       : isNeighbor ? Color.web("#ea580c",0.85)
+                       : c.deriveColor(0,1,0.8,0.5));
+            gc.setLineWidth(isSelZone || isNeighbor ? 2.5 : 1); gc.strokePolygon(xs,ys,v.size());
         }
 
         // Delaunay triangulation (blue edges)
@@ -668,5 +676,27 @@ public class MapView {
         for (Patient p : map.getPatients().values())
             if (Math.hypot(mx - sx(p), my - sy(p)) <= 8) return p;
         return null;
+    }
+
+    // Returns the Voronoi zones adjacent to hospital h (sharing a Delaunay edge)
+    private Set<VoronoiZone> getNeighborZones(Hospital h) {
+        Set<Hospital> neighbors = new HashSet<>();
+        for (DelaunayTriangle t : map.getTriangles()) {
+            Coordinate[] v = t.getVertices();
+            boolean hasH = false;
+            for (Coordinate c : v) if (c.equals(h.getPosition())) { hasH = true; break; }
+            if (!hasH) continue;
+            for (Coordinate c : v) {
+                if (!c.equals(h.getPosition())) {
+                    map.getHospitals().values().stream()
+                        .filter(o -> o.getPosition().equals(c))
+                        .findFirst().ifPresent(neighbors::add);
+                }
+            }
+        }
+        Set<VoronoiZone> result = new HashSet<>();
+        for (VoronoiZone z : map.getZones())
+            if (neighbors.contains(z.getHospital())) result.add(z);
+        return result;
     }
 }
