@@ -28,7 +28,7 @@ public class MapView {
     // Control state
     private Hospital selectedHospital;
     private boolean  addingHospital, placingPatient;
-    private int      hid = 6, pid = 1;
+    private int      hid = 1, pid = 1;
     private Hospital dragged      = null;
     private boolean  wasDragged   = false;
     private double   zoom = SCALE, panX = MARGIN, panY = H - MARGIN;
@@ -58,7 +58,6 @@ public class MapView {
     private Label     statusBar       = new Label("lat: —  lon: —");
 
     public void show() {
-        initHospitals();
         computeGeometry();
 
         canvas = new Canvas(W, H);
@@ -245,23 +244,7 @@ public class MapView {
 
     // --- Model ---
 
-    private void initHospitals() {
-        addH("H1","Paris Hospital",   10,  20, 100, 45, "NEUROLOGY,GENERAL");
-        addH("H2","City Hospital",   100, 200,  50, 38, "CARDIOLOGY");
-        addH("H3","North Hospital",   80,  40,  80, 20, "GENERAL");
-        addH("H4","West Hospital",    30, 150,  70, 60, "GENERAL,PEDIATRICS");
-        addH("H5","South Hospital",  150,  80,  90, 72, "CARDIOLOGY,NEUROLOGY");
-    }
-
-    private void addH(String id, String name, double lat, double lon, int cap, int cur, String svcs) {
-        Hospital h = new Hospital(id, name, new Coordinate(lat, lon), cap);
-        for (String s : svcs.split(",")) h.addService(parseService(s));
-        h.updateCapacity(cur);
-        map.getHospitals().put(id, h);
-    }
-
     // Delegates recomputation to MapManager, then updates Voronoi edges (not managed by MapManager).
-    // Only used for init and drag paths that bypass the MapManager API.
     private void computeGeometry() {
         if (map.getHospitals().size() < 3) { edges = new ArrayList<>(); return; }
         map.recompute();
