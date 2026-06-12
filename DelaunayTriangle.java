@@ -1,5 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a triangle in the Delaunay triangulation.
@@ -42,10 +41,6 @@ public class DelaunayTriangle {
                 + (p.getLongitude() - uy) * (p.getLongitude() - uy));
 
         return dist < radius;
-    }
-
-    public void display() {
-        System.out.println("Triangle: " + vertices[0] + " " + vertices[1] + " " + vertices[2]);
     }
 
     public Coordinate[] getVertices() {
@@ -139,4 +134,27 @@ public class DelaunayTriangle {
     public String toString() {
         return "Triangle[" + vertices[0] + ", " + vertices[1] + ", " + vertices[2] + "]";
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (!(obj instanceof DelaunayTriangle)) {
+            return false;
+        }
+
+        DelaunayTriangle other = (DelaunayTriangle) obj;
+
+        return vertices[0].equals(other.vertices[0])
+                && vertices[1].equals(other.vertices[1])
+                && vertices[2].equals(other.vertices[2]);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(vertices[0], vertices[1], vertices[2]);
+    }
+
 }
