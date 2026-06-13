@@ -7,7 +7,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
-import java.lang.classfile.Label;
 import java.util.*;
 import java.util.function.Consumer;
 
