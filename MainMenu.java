@@ -7,8 +7,24 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * JavaFX entry point and main menu of the Emergency Dispatcher graphical interface.
+ *
+ * <p>Displays the welcome screen from which the dispatcher can open the interactive
+ * map or quit the application. All domain logic is handled by {@link MapView};
+ * this class is purely navigational.</p>
+ *
+ * @author Maissa Tirsane, Anas Chokri, Iyed Souissi, Valery Vo-Van
+ * @version 1.0
+ * @see MapView
+ */
 public class MainMenu extends Application {
 
+    /**
+     * Builds and shows the main menu window.
+     *
+     * @param primaryStage the top-level window provided by the JavaFX runtime
+     */
     @Override
     public void start(Stage primaryStage) {
 
@@ -41,6 +57,11 @@ public class MainMenu extends Application {
         primaryStage.show();
     }
 
+    /**
+     * JVM entry point that hands control to the JavaFX runtime.
+     *
+     * @param args command-line arguments; not used
+     */
     public static void main(String[] args) {
         launch(args);
     }
