@@ -64,7 +64,6 @@ Dans ce projet :
 ### Acteurs secondaires
 
 - Base hospitalière
-- Service GPS / cartographique
 - Système de fichiers
 
 ## Technologies utilisées 
