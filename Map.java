@@ -4,9 +4,6 @@ import java.util.Date;
 /**
  * Descriptor for a named, formatted map file managed by the persistence layer.
  *
- * <p>Records the file name, the storage format and the creation timestamp.
- * Delegates actual I/O to the {@link FileSystem} injected at construction time,
- * keeping this class free of any dependency on a specific storage technology.</p>
  *
  * @author Maissa Tirsane, Anas Chokri, Iyed Souissi, Valery Vo-Van
  * @version 1.0
