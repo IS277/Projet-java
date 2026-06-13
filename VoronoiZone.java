@@ -7,14 +7,49 @@ import java.util.Objects;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Represents the geographic influence zone of a single hospital in the Voronoi diagram.
+ *
+ * <p>A {@code VoronoiZone} is a convex polygon whose vertices are the circumcenters
+ * of the Delaunay triangles that contain the associated hospital.
+ * It tracks the patients located inside it and exposes statistical indicators
+ * (surface, perimeter, density, distance metrics, service breakdown) used by the
+ * graphical views and the dispatcher for decision support.</p>
+ *
+ * <p>Implements {@link Comparable} so that zones can be ranked by surface area.</p>
+ *
+ * @author Maissa Tirsane, Anas Chokri, Iyed Souissi, Valery Vo-Van
+ * @version 1.0
+ * @see VoronoiService
+ */
 public class VoronoiZone implements Comparable<VoronoiZone> {
 
+    /** Unique identifier used to distinguish zones in collections and persistence. */
     private final String id;
+    /** Hospital whose influence region this zone represents. */
     private final Hospital hospital;
+    /** Ordered list of polygon vertices defining the zone boundary. */
     private List<Coordinate> vertices;
+    /**
+     * Pre-computed surface area kept in sync with {@link #vertices}
+     * to avoid recomputing it on every statistics query.
+     */
     private double surface;
+    /**
+     * Patients located inside this zone, stored in a {@link java.util.HashSet}
+     * to prevent duplicates and allow O(1) membership tests.
+     */
     private Set<Patient> patients;
 
+    /**
+     * Constructs a Voronoi zone and immediately computes its surface area.
+     *
+     * @param id       non-blank identifier for this zone
+     * @param hospital hospital associated with this zone; must not be {@code null}
+     * @param vertices polygon vertices; at least three required for a valid polygon
+     * @throws IllegalArgumentException if {@code id} is blank, {@code hospital} is
+     *                                  {@code null}, or fewer than three vertices are supplied
+     */
     public VoronoiZone(String id, Hospital hospital, List<Coordinate> vertices) {
         if (id == null || id.isBlank())
             throw new IllegalArgumentException("Zone id cannot be empty");
@@ -30,6 +65,15 @@ public class VoronoiZone implements Comparable<VoronoiZone> {
         this.patients = new HashSet<>();
     }
 
+    /**
+     * Tests whether a coordinate lies inside this zone using the ray-casting algorithm.
+     *
+     * <p>Vertices are sorted by polar angle around the hospital before the test
+     * because the raw vertex list may be unordered.</p>
+     *
+     * @param c coordinate whose membership is to be tested
+     * @return {@code true} if {@code c} is inside this zone
+     */
     public boolean contains(Coordinate c) {
         // Sort from hospital position — it is guaranteed to be inside its own Voronoi cell
         Coordinate ref = hospital.getPosition();
@@ -55,6 +99,11 @@ public class VoronoiZone implements Comparable<VoronoiZone> {
         return inside;
     }
 
+    /**
+     * Computes the surface area using the shoelace formula and stores the result.
+     *
+     * @return the computed surface area in squared coordinate units
+     */
     public double computeSurface() {
         int n = vertices.size();
         double area = 0;
@@ -69,6 +118,11 @@ public class VoronoiZone implements Comparable<VoronoiZone> {
         return this.surface;
     }
 
+    /**
+     * Returns the centroid as the arithmetic mean of the polygon vertices.
+     *
+     * @return centroid coordinate
+     */
     public Coordinate getCenter() {
         double sumLat = 0;
         double sumLon = 0;
@@ -81,10 +135,22 @@ public class VoronoiZone implements Comparable<VoronoiZone> {
         return new Coordinate(sumLat / vertices.size(), sumLon / vertices.size());
     }
 
+    /**
+     * Returns the Euclidean distance from the given coordinate to the zone centroid.
+     *
+     * @param c the coordinate from which to measure
+     * @return distance in coordinate units
+     */
     public double distanceToCenter(Coordinate c) {
         return c.distanceTo(getCenter());
     }
 
+    /**
+     * Appends a vertex to the polygon and recomputes the surface area.
+     *
+     * @param vertex vertex to add; must not be {@code null}
+     * @throws IllegalArgumentException if {@code vertex} is {@code null}
+     */
     public void addVertex(Coordinate vertex) {
         if (vertex == null)
             throw new IllegalArgumentException("Vertex cannot be null");
@@ -92,6 +158,12 @@ public class VoronoiZone implements Comparable<VoronoiZone> {
         computeSurface();
     }
 
+    /**
+     * Removes a vertex from the polygon and recomputes the surface area.
+     *
+     * @param vertex vertex to remove
+     * @throws IllegalStateException if removal would leave fewer than three vertices
+     */
     public void removeVertex(Coordinate vertex) {
         if (vertices.size() <= 3)
             throw new IllegalStateException("Cannot remove vertex: zone must keep at least 3 vertices");
@@ -99,6 +171,12 @@ public class VoronoiZone implements Comparable<VoronoiZone> {
         computeSurface();
     }
 
+    /**
+     * Registers a patient as belonging to this zone.
+     *
+     * @param patient patient to register; must not be {@code null}
+     * @throws IllegalArgumentException if {@code patient} is {@code null}
+     */
     public void addPatient(Patient patient) {
         if (patient == null) {
             throw new IllegalArgumentException("Patient cannot be null");
@@ -107,10 +185,20 @@ public class VoronoiZone implements Comparable<VoronoiZone> {
         patients.add(patient);
     }
 
+    /**
+     * Returns the number of patients currently registered in this zone.
+     *
+     * @return patient count; zero if no patients have been assigned
+     */
     public int getPatientCount() {
         return patients.size();
     }
 
+    /**
+     * Returns the patient density (patients per surface unit).
+     *
+     * @return density, or {@code 0} if the surface is zero
+     */
     public double getDensity() {
         if (surface == 0) {
             return 0;
@@ -119,6 +207,11 @@ public class VoronoiZone implements Comparable<VoronoiZone> {
         return patients.size() / surface;
     }
 
+    /**
+     * Returns the average distance from patients in this zone to the hospital.
+     *
+     * @return mean distance, or {@code 0} if no patients are present
+     */
     public double getAverageDistanceToHospital() {
         if (patients.isEmpty()) {
             return 0;
@@ -134,6 +227,11 @@ public class VoronoiZone implements Comparable<VoronoiZone> {
         return totalDistance / patients.size();
     }
 
+    /**
+     * Returns a defensive copy of the patient set to prevent external mutation.
+     *
+     * @return new set containing the current patients
+     */
     public Set<Patient> getPatients() {
         return new HashSet<>(patients);
     }
