@@ -4,25 +4,25 @@ import java.util.Objects;
 import java.io.Serializable;
 
 /**
- * Représente un hôpital du système d'urgence.
+ * Business class representing a hospital in the emergency dispatch system.
  *
- * Cette classe métier contient toutes les informations nécessaires
- * à la gestion d'un hôpital :
+ * A hospital contains all information required for patient assignment
+ * and emergency service management:
  * <ul>
- *     <li>son identifiant unique ;</li>
- *     <li>son nom ;</li>
- *     <li>sa position géographique ;</li>
- *     <li>sa capacité maximale ;</li>
- *     <li>sa capacité actuellement utilisée ;</li>
- *     <li>les services médicaux qu'il propose.</li>
+ *     <li>a unique identifier;</li>
+ *     <li>a display name;</li>
+ *     <li>a geographic position;</li>
+ *     <li>a maximum capacity;</li>
+ *     <li>a current occupancy level;</li>
+ *     <li>the medical services available.</li>
  * </ul>
  *
- * La classe implémente {@link Serializable} afin de permettre
- * la sauvegarde et le chargement de la carte via
- * MapPersistenceService.
+ * This class implements {@link Serializable} so that hospitals can be
+ * saved and restored using the persistence layer of the application.
  *
- * Deux hôpitaux sont considérés identiques s'ils possèdent
- * le même identifiant.
+ * Two hospitals are considered equal when they share the same identifier.
+ *
+ * <p><b>Class type:</b> Business class (Model layer).</p>
  *
  * @author Maïssa Tirsane, Anas Chokri, Iyed Souissi, Valery Vo-Van
  * @version 1.0
@@ -30,50 +30,50 @@ import java.io.Serializable;
 public class Hospital implements Serializable {
 
     /**
-     * Identifiant unique de l'hôpital.
+     * Unique hospital identifier.
      */
     private String id;
 
     /**
-     * Nom affiché de l'hôpital.
+     * Hospital display name.
      */
     private String name;
 
     /**
-     * Position géographique de l'hôpital.
+     * Geographic position of the hospital.
      */
     private Coordinate position;
 
     /**
-     * Nombre maximal de patients pouvant être accueillis.
+     * Maximum number of patients that can be admitted.
      */
     private int maxCapacity;
 
     /**
-     * Nombre actuel de patients pris en charge.
+     * Current number of admitted patients.
      */
     private int currentCapacity;
 
     /**
-     * Ensemble des services médicaux disponibles.
+     * Set of medical services provided by the hospital.
      */
     private Set<HospitalServiceType> services;
 
     /**
-     * Identifiant de version utilisé lors de la sérialisation.
+     * Serialization identifier.
      */
     private static final long serialVersionUID = 1L;
 
     /**
-     * Construit un nouvel hôpital.
+     * Creates a new hospital.
      *
-     * La capacité actuelle est initialisée à 0 et
-     * aucun service n'est ajouté automatiquement.
+     * The hospital is initially empty and no medical service
+     * is registered by default.
      *
-     * @param id identifiant unique de l'hôpital
-     * @param name nom de l'hôpital
-     * @param position position géographique
-     * @param maxCapacity capacité maximale d'accueil
+     * @param id unique hospital identifier
+     * @param name hospital name
+     * @param position hospital geographic position
+     * @param maxCapacity maximum number of patients that can be admitted
      */
     public Hospital(
             String id,
@@ -86,43 +86,42 @@ public class Hospital implements Serializable {
         this.position = position;
         this.maxCapacity = maxCapacity;
 
-        // Un hôpital est vide lors de sa création.
+        // A newly created hospital starts with no admitted patients.
         this.currentCapacity = 0;
 
-        // Les services seront ajoutés ultérieurement.
+        // Services are added later depending on hospital specialization.
         this.services = new HashSet<>();
     }
 
     /**
-     * Calcule le taux de saturation de l'hôpital.
+     * Computes the hospital saturation rate.
      *
-     * Cette valeur est comprise entre 0 et 1.
-     * Elle est utilisée dans l'affichage graphique
-     * ainsi que dans les statistiques.
+     * The returned value is between 0 and 1 and is used
+     * for statistics, patient assignment visualization
+     * and hospital status monitoring.
      *
-     * @return taux de saturation
+     * @return saturation rate of the hospital
      */
     public double getSaturationRate() {
         return (double) currentCapacity / maxCapacity;
     }
 
     /**
-     * Indique si l'hôpital est plein.
+     * Checks whether the hospital has reached its maximum capacity.
      *
-     * @return true si la capacité maximale est atteinte
+     * @return true if the hospital is saturated
      */
     public boolean isSaturated() {
         return currentCapacity >= maxCapacity;
     }
 
     /**
-     * Met à jour le nombre de patients actuellement admis.
+     * Updates the current occupancy level.
      *
-     * Afin de garantir la cohérence de l'objet,
-     * la valeur est automatiquement bornée entre
-     * 0 et la capacité maximale.
+     * The value is automatically clamped between 0 and the
+     * maximum capacity in order to preserve object consistency.
      *
-     * @param currentCapacity nouvelle capacité utilisée
+     * @param currentCapacity new occupancy level
      */
     public void updateCapacity(int currentCapacity) {
 
@@ -140,97 +139,105 @@ public class Hospital implements Serializable {
     }
 
     /**
-     * Ajoute un service médical à l'hôpital.
+     * Adds a medical service to the hospital.
      *
-     * L'utilisation d'un Set empêche automatiquement
-     * les doublons.
+     * A Set is used to automatically prevent duplicates.
      *
-     * @param service service à ajouter
+     * @param service medical service to add
      */
     public void addService(HospitalServiceType service) {
         services.add(service);
     }
 
     /**
-     * Vérifie si l'hôpital propose un service donné.
+     * Checks whether the hospital provides a specific service.
      *
-     * Cette méthode est utilisée par
-     * AssignmentService lors de la recherche
-     * du meilleur hôpital pour un patient.
+     * This method is mainly used by AssignmentService when
+     * searching for the most appropriate hospital for a patient.
      *
-     * @param service service recherché
-     * @return true si le service est disponible
+     * @param service requested medical service
+     * @return true if the service is available
      */
     public boolean hasService(HospitalServiceType service) {
         return services.contains(service);
     }
 
     /**
-     * @return identifiant de l'hôpital
+     * Returns the hospital identifier.
+     *
+     * @return hospital identifier
      */
     public String getId() {
         return id;
     }
 
     /**
-     * @return nom de l'hôpital
+     * Returns the hospital name.
+     *
+     * @return hospital name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * @return position géographique
+     * Returns the hospital position.
+     *
+     * @return geographic position
      */
     public Coordinate getPosition() {
         return position;
     }
 
     /**
-     * @return capacité maximale
+     * Returns the maximum capacity.
+     *
+     * @return maximum capacity
      */
     public int getMaxCapacity() {
         return maxCapacity;
     }
 
     /**
-     * @return capacité actuellement utilisée
+     * Returns the current occupancy level.
+     *
+     * @return current number of admitted patients
      */
     public int getCurrentCapacity() {
         return currentCapacity;
     }
 
     /**
-     * Retourne une copie défensive de l'ensemble des services.
+     * Returns a defensive copy of the service set.
      *
-     * Cela évite qu'une autre classe puisse modifier
-     * directement la collection interne de l'hôpital.
+     * Returning a copy prevents external classes from
+     * modifying the internal collection directly.
      *
-     * @return copie des services proposés
+     * @return copy of available services
      */
     public Set<HospitalServiceType> getServices() {
         return new HashSet<>(services);
     }
 
     /**
-     * Met à jour la position de l'hôpital.
+     * Updates the geographic position of the hospital.
      *
-     * Utilisé notamment lors du déplacement
-     * d'un hôpital dans l'interface graphique.
+     * This method is notably used when a hospital is moved
+     * through the graphical interface.
      *
-     * @param newPosition nouvelle position
+     * @param newPosition new hospital position
      */
     public void updatePosition(Coordinate newPosition) {
         this.position = newPosition;
     }
 
     /**
-     * Tente d'admettre un nouveau patient.
+     * Attempts to admit a new patient.
      *
-     * La capacité est augmentée uniquement
-     * si l'hôpital n'est pas saturé.
+     * The occupancy level is increased only if the hospital
+     * is not already saturated.
      *
-     * @return true si le patient a été admis
+     * @return true if the patient was successfully admitted
      */
     public boolean admitPatient() {
 
@@ -243,12 +250,11 @@ public class Hospital implements Serializable {
     }
 
     /**
-     * Retourne une représentation textuelle complète
-     * de l'hôpital.
+     * Returns a complete textual representation of the hospital.
      *
-     * Utile pour le débogage et l'affichage console.
+     * Mainly used for debugging and console outputs.
      *
-     * @return description complète de l'hôpital
+     * @return hospital description
      */
     @Override
     public String toString() {
@@ -263,11 +269,13 @@ public class Hospital implements Serializable {
     }
 
     /**
-     * Deux hôpitaux sont égaux lorsqu'ils possèdent
-     * le même identifiant.
+     * Compares this hospital with another object.
      *
-     * @param obj objet à comparer
-     * @return true si les identifiants sont identiques
+     * Two hospitals are considered equal when they share
+     * the same unique identifier.
+     *
+     * @param obj object to compare
+     * @return true if both hospitals have the same identifier
      */
     @Override
     public boolean equals(Object obj) {
@@ -286,13 +294,13 @@ public class Hospital implements Serializable {
     }
 
     /**
-     * Génère le code de hachage associé à l'identifiant.
+     * Generates a hash code consistent with equals().
      *
-     * Cette méthode doit être cohérente avec equals()
-     * pour permettre l'utilisation correcte de Hospital
-     * dans les HashSet et HashMap.
+     * This implementation allows Hospital objects to be
+     * safely stored in hash-based collections such as
+     * HashSet and HashMap.
      *
-     * @return code de hachage
+     * @return hospital hash code
      */
     @Override
     public int hashCode() {

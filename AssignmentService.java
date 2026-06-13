@@ -1,40 +1,48 @@
 import java.util.List;
 
 /**
- * Classe service responsable de l'affectation des patients.
+ * Service class responsible for patient assignment.
  *
- * Cette classe contient les algorithmes permettant
- * de sélectionner l'hôpital le plus adapté à un patient
- * selon différents critères.
+ * This class contains the algorithms used to determine
+ * the most appropriate hospital for a patient according
+ * to several criteria.
  *
- * Dans cette version du projet, le choix est effectué
- * en fonction :
+ * In the current implementation, hospital selection is based on:
  * <ul>
- *     <li>de la disponibilité de l'hôpital ;</li>
- *     <li>du service médical demandé ;</li>
- *     <li>de la distance entre le patient et l'hôpital.</li>
+ *     <li>hospital availability;</li>
+ *     <li>availability of the required medical service;</li>
+ *     <li>distance between the patient and the hospital.</li>
  * </ul>
  *
- * @author Équipe Projet Emergency Dispatcher
+ * The objective is to assign each patient to the nearest
+ * hospital capable of providing the requested care while
+ * respecting capacity constraints.
+ *
+ * <p><b>Class type:</b> Service class.</p>
+ *
+ * @author Maïssa Tirsane, Anas Chokri, Iyed Souissi, Valery Vo-Van
  * @version 1.0
  */
 public class AssignmentService {
 
     /**
-     * Recherche l'hôpital le plus proche capable de prendre
-     * en charge un patient.
+     * Finds the most suitable hospital for a patient.
      *
-     * Les hôpitaux saturés sont ignorés.
-     * Les hôpitaux ne proposant pas le service demandé
-     * sont également exclus de la recherche.
+     * The method iterates through all available hospitals
+     * and applies the following filters:
+     * <ol>
+     *     <li>the hospital must not be saturated;</li>
+     *     <li>the hospital must provide the required service;</li>
+     *     <li>among all valid hospitals, the closest one is selected.</li>
+     * </ol>
      *
-     * Si aucun établissement ne satisfait les contraintes,
-     * la méthode retourne {@code null}.
+     * If no hospital satisfies these constraints,
+     * the method returns {@code null}.
      *
-     * @param patient patient à affecter
-     * @param hospitals liste des hôpitaux disponibles
-     * @return l'hôpital sélectionné ou null si aucun hôpital
-     *         ne peut accueillir le patient
+     * @param patient patient requiring medical assistance
+     * @param hospitals list of available hospitals
+     * @return the closest compatible hospital,
+     *         or {@code null} if no suitable hospital exists
      */
     public static Hospital findBestHospital(
             Patient patient,
@@ -42,16 +50,19 @@ public class AssignmentService {
     ) {
 
         Hospital bestHospital = null;
+
+        // Start with the largest possible distance.
         double bestDistance = Double.MAX_VALUE;
 
         for (Hospital hospital : hospitals) {
 
-            // Un hôpital plein ne peut pas accueillir de nouveau patient.
+            // A saturated hospital cannot accept additional patients.
             if (hospital.isSaturated()) {
                 continue;
             }
 
-            // Le service médical demandé doit être disponible.
+            // The hospital must provide the medical service requested
+            // by the patient.
             if (!hospital.hasService(patient.getRequiredService())) {
                 continue;
             }
@@ -60,7 +71,7 @@ public class AssignmentService {
                     patient.getPosition()
                             .distanceTo(hospital.getPosition());
 
-            // On conserve uniquement l'hôpital le plus proche.
+            // Keep only the closest valid hospital found so far.
             if (distance < bestDistance) {
                 bestDistance = distance;
                 bestHospital = hospital;

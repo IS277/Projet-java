@@ -2,37 +2,41 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * Classe métier représentant une coordonnée géographique.
+ * Business class representing a geographic coordinate.
  *
- * Une coordonnée est définie par une latitude et une longitude.
- * Cette classe est utilisée pour positionner les hôpitaux,
- * les patients et les éléments géométriques du projet.
+ * A coordinate is defined by a latitude and a longitude.
+ * It is used throughout the application to represent the
+ * position of hospitals, patients and geometric structures
+ * such as Delaunay triangles and Voronoi edges.
  *
- * @author Équipe Projet Emergency Dispatcher
+ * The class implements {@link Serializable} so that map data
+ * can be saved and restored using the persistence layer.
+ *
+ * @author Maïssa Tirsane, Anas Chokri, Iyed Souissi, Valery Vo-Van
  * @version 1.0
  */
 public class Coordinate implements Serializable {
 
     /**
-     * Latitude de la position.
+     * Latitude of the coordinate.
      */
     private double latitude;
 
     /**
-     * Longitude de la position.
+     * Longitude of the coordinate.
      */
     private double longitude;
 
     /**
-     * Identifiant de version pour la sérialisation.
+     * Serialization identifier used when saving objects.
      */
     private static final long serialVersionUID = 1L;
 
     /**
-     * Construit une nouvelle coordonnée.
+     * Creates a new coordinate.
      *
-     * @param latitude latitude de la position
-     * @param longitude longitude de la position
+     * @param latitude latitude value
+     * @param longitude longitude value
      */
     public Coordinate(double latitude, double longitude) {
         this.latitude = latitude;
@@ -40,39 +44,50 @@ public class Coordinate implements Serializable {
     }
 
     /**
-     * Calcule la distance euclidienne entre cette coordonnée
-     * et une autre coordonnée.
+     * Computes the Euclidean distance between this coordinate
+     * and another coordinate.
      *
-     * Cette approximation est suffisante pour les besoins
-     * de la simulation.
+     * For the purposes of this project, coordinates are handled
+     * in a simplified Cartesian space. This approximation is
+     * sufficient because the goal is to compare relative
+     * distances between hospitals and patients.
      *
-     * @param c coordonnée de destination
-     * @return distance entre les deux positions
+     * @param c destination coordinate
+     * @return Euclidean distance between the two coordinates
      */
     public double distanceTo(Coordinate c) {
+
+        // A simple distance model is sufficient for the simulation.
         double dx = this.latitude - c.latitude;
         double dy = this.longitude - c.longitude;
+
         return Math.sqrt(dx * dx + dy * dy);
     }
 
     /**
-     * @return latitude de la position
+     * Returns the latitude of the coordinate.
+     *
+     * @return latitude value
      */
     public double getLatitude() {
         return latitude;
     }
 
     /**
-     * @return longitude de la position
+     * Returns the longitude of the coordinate.
+     *
+     * @return longitude value
      */
     public double getLongitude() {
         return longitude;
     }
 
     /**
-     * Retourne une représentation textuelle de la coordonnée.
+     * Returns a textual representation of the coordinate.
      *
-     * @return chaîne décrivant la coordonnée
+     * Mainly used for debugging, logging and console output.
+     *
+     * @return formatted coordinate description
      */
     @Override
     public String toString() {
@@ -83,16 +98,17 @@ public class Coordinate implements Serializable {
     }
 
     /**
-     * Compare deux coordonnées.
+     * Compares this coordinate with another object.
      *
-     * Deux coordonnées sont considérées égales si elles
-     * possèdent la même latitude et la même longitude.
+     * Two coordinates are considered equal when they have
+     * exactly the same latitude and longitude values.
      *
-     * @param obj objet à comparer
-     * @return true si les coordonnées sont identiques
+     * @param obj object to compare with
+     * @return true if both coordinates are identical
      */
     @Override
     public boolean equals(Object obj) {
+
         if (this == obj) {
             return true;
         }
@@ -108,9 +124,12 @@ public class Coordinate implements Serializable {
     }
 
     /**
-     * Génère le code de hachage associé à la coordonnée.
+     * Generates a hash code consistent with the equals method.
      *
-     * @return code de hachage
+     * This allows Coordinate objects to be safely used in
+     * hash-based collections such as HashSet and HashMap.
+     *
+     * @return hash code of the coordinate
      */
     @Override
     public int hashCode() {
