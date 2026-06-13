@@ -1,6 +1,21 @@
+/**
+ * Enumeration of the medical service types available in the emergency dispatch system.
+ *
+ * <p>Each constant represents a distinct medical specialty that a hospital may offer.
+ * This enumeration is used both to characterise the capabilities of a {@link Hospital}
+ * and to express the care requirement of a {@link Patient}, enabling the
+ * {@link AssignmentService} to match patients with compatible hospitals.</p>
+ *
+ * @author Maissa Tirsane, Anas Chokri, Iyed Souissi, Valery Vo-Van
+ * @version 1.0
+ */
 public enum HospitalServiceType {
+    /** General medicine, accepted by all hospitals as a baseline service. */
     GENERAL,
+    /** Neurological care, required for conditions such as stroke or epilepsy. */
     NEUROLOGY,
+    /** Cardiac care, required for conditions such as myocardial infarction. */
     CARDIOLOGY,
+    /** Paediatric care, required for patients under the age of majority. */
     PEDIATRICS
 }
