@@ -158,7 +158,7 @@ public class CommandLineApp {
             return;
 
         }
-        if (manager.getHospitals().containsKey(id)) {
+        if (manager.hasHospital(id)) {
             System.out.println("Hospital id already exists.");
             return;
         }
@@ -204,7 +204,7 @@ public class CommandLineApp {
         System.out.print("Hospital id: ");
         String id = scanner.nextLine();
 
-        if (!manager.getHospitals().containsKey(id)) {
+        if (!manager.hasHospital(id)) {
             System.out.println("Hospital not found: " + id);
             return;
         }
@@ -219,7 +219,7 @@ public class CommandLineApp {
         System.out.print("Hospital id: ");
         String id = scanner.nextLine();
 
-        if (!manager.getHospitals().containsKey(id)) {
+        if (!manager.hasHospital(id)) {
             System.out.println("Hospital not found: " + id);
             return;
         }
@@ -290,7 +290,7 @@ public class CommandLineApp {
 
         }
 
-        if (manager.getPatients().containsKey(id)) {
+        if (manager.hasPatient(id)) {
             System.out.println("Patient id already exists.");
             return;
         }
@@ -365,7 +365,7 @@ public class CommandLineApp {
         System.out.print("Patient id: ");
         String id = scanner.nextLine();
 
-        if (!manager.getPatients().containsKey(id)) {
+        if (!manager.hasPatient(id)) {
             System.out.println("Patient not found: " + id);
             return;
         }
@@ -380,7 +380,7 @@ public class CommandLineApp {
         System.out.print("Patient id: ");
         String id = scanner.nextLine();
 
-        if (!manager.getPatients().containsKey(id)) {
+        if (!manager.hasPatient(id)) {
             System.out.println("Patient not found: " + id);
             return;
         }
@@ -512,9 +512,9 @@ public class CommandLineApp {
 
             Coordinate[] vertices = triangle.getVertices();
 
-            Hospital hospitalA = findHospitalByPosition(vertices[0]);
-            Hospital hospitalB = findHospitalByPosition(vertices[1]);
-            Hospital hospitalC = findHospitalByPosition(vertices[2]);
+            Hospital hospitalA = manager.findHospitalByPosition(vertices[0]);
+            Hospital hospitalB = manager.findHospitalByPosition(vertices[1]);
+            Hospital hospitalC = manager.findHospitalByPosition(vertices[2]);
 
             String nameA = hospitalA != null ? hospitalA.getName() : "A";
             String nameB = hospitalB != null ? hospitalB.getName() : "B";
@@ -715,17 +715,6 @@ public class CommandLineApp {
             System.out.println("Invalid integer.");
             return null;
         }
-    }
-
-    private Hospital findHospitalByPosition(Coordinate position) {
-
-        for (Hospital hospital : manager.getHospitals().values()) {
-            if (hospital.getPosition().equals(position)) {
-                return hospital;
-            }
-        }
-
-        return null;
     }
 
     private void inspectTriangle() {

@@ -121,7 +121,6 @@ public class MapManager implements Serializable {
             hospital.updateCapacity(0);
         }
 
-        
         for (Patient patient : patients.values()) {
             Hospital hospital = AssignmentService.findBestHospital(
                     patient,
@@ -142,6 +141,26 @@ public class MapManager implements Serializable {
 
     public List<VoronoiEdge> getVoronoiEdges() {
         return voronoiEdges;
+    }
+
+    public boolean hasHospital(String hospitalId) {
+        return hospitals.containsKey(hospitalId);
+    }
+
+    public boolean hasPatient(String patientId) {
+        return patients.containsKey(patientId);
+    }
+
+    public Hospital findHospitalByPosition(Coordinate position) {
+
+        for (Hospital hospital : hospitals.values()) {
+
+            if (hospital.getPosition().equals(position)) {
+                return hospital;
+            }
+        }
+
+        return null;
     }
 
 }
