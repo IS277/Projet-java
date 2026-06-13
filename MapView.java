@@ -42,6 +42,7 @@ public class MapView {
     private Button   btnAdd, btnRemove, btnPlace;
     private TextField hospName, patientName;
     private ComboBox<HospitalServiceType> svcCombo;
+    private Spinner<Integer> randomCountSpinner;
     private Label    infoLabel, resultLabel;
     private CheckBox cbDelaunay      = new CheckBox("Delaunay");
     private CheckBox cbVoronoi       = new CheckBox("Voronoï");
@@ -113,6 +114,9 @@ public class MapView {
         svcCombo.getItems().addAll(HospitalServiceType.values());
         svcCombo.setValue(HospitalServiceType.GENERAL);
         svcCombo.setMaxWidth(Double.MAX_VALUE);
+        randomCountSpinner = new Spinner<>(1, 500, 10);
+        randomCountSpinner.setEditable(true);
+        randomCountSpinner.setPrefWidth(75);
         infoLabel   = new Label("Click a hospital."); infoLabel.setWrapText(true);
         resultLabel = new Label("—");                 resultLabel.setWrapText(true);
 
@@ -144,7 +148,6 @@ public class MapView {
             sep(), bold("Hospital"), hospName, row(btnAdd, btnRemove), infoLabel,
             sep(), bold("Patient"),  patientName, svcCombo,
                                      row(btnPlace,
-                                         btn("+5 Random", e -> addRandomPatients(5)),
                                          btn("Clear", e -> {
                                              map.getPatients().clear();
                                              map.recompute();
@@ -152,6 +155,9 @@ public class MapView {
                                              selectedPatient = null;
                                              resultLabel.setText("—"); refreshEdges(); drawMap();
                                          })),
+                                     new HBox(6, new Label("N :"), randomCountSpinner,
+                                         btn("Add Random", e -> addRandomPatientsBulk(
+                                                 randomCountSpinner.getValue()))),
             sep(), bold("Statistiques"), statPatients, statSatAvg, statSaturated,
             sep(), bold("Result"), resultLabel,
             sep(), btn("Simulation", e -> {
@@ -373,10 +379,32 @@ public class MapView {
         } catch (Exception ex) { alert("Error: " + ex.getMessage()); }
     }
 
-    private void addRandomPatients(int n) {
+    private void addRandomPatientsBulk(int n) {
+        if (map.getHospitals().isEmpty()) { alert("Add at least one hospital first."); return; }
         Random rng = new Random();
-        for (int i = 0; i < n; i++)
-            placePatient("", 5 + rng.nextDouble() * 150, 5 + rng.nextDouble() * 230);
+        double latMin = screenToLat(H - MARGIN), latMax = screenToLat(MARGIN);
+        double lonMin = screenToLon(MARGIN),     lonMax = screenToLon(W - MARGIN);
+        if (latMax <= latMin || lonMax <= lonMin) {
+            latMin = 5; latMax = 155; lonMin = 5; lonMax = 235;
+        }
+        HospitalServiceType[] services = HospitalServiceType.values();
+        for (int i = 0; i < n; i++) {
+            int id = pid++;
+            Patient p = new Patient("P" + id, "P" + id,
+                    new Coordinate(latMin + rng.nextDouble() * (latMax - latMin),
+                                   lonMin + rng.nextDouble() * (lonMax - lonMin)),
+                    services[rng.nextInt(services.length)]);
+            map.getPatients().put(p.getId(), p);
+        }
+        map.recompute();
+        for (Patient p : map.getPatients().values())
+            if (!assignments.containsKey(p)) {
+                Hospital best = AssignmentService.findBestHospital(
+                        p, new ArrayList<>(map.getHospitals().values()));
+                if (best != null) assignments.put(p, best);
+            }
+        refreshEdges();
+        drawMap();
     }
 
     // --- Presentation: Canvas rendering ---
