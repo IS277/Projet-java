@@ -9,8 +9,23 @@ import javafx.stage.Stage;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * JavaFX view displaying statistical details about a selected Voronoi zone.
+ *
+ * <p>Covers geometry metrics, patient statistics, service breakdown and
+ * associated hospital information.</p>
+ *
+ * @author Maissa Tirsane, Anas Chokri, Iyed Souissi, Valery Vo-Van
+ * @version 1.0
+ */
 public class ZoneDetailView {
 
+    /**
+     * Opens the zone detail window.
+     *
+     * @param zone     zone whose statistics are to be displayed
+     * @param allZones all zones on the map, used to compute the average patient count
+     */
     public void show(VoronoiZone zone, List<VoronoiZone> allZones) {
         Hospital h = zone.getHospital();
 
