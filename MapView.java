@@ -401,7 +401,7 @@ public class MapView {
             map = new MapPersistenceService().loadMap(f.getAbsolutePath());
             map.initializeAfterLoading();
             assignments.clear(); selectedHospital = null; selectedPatient = null;
-            edges = new VoronoiService().getVoronoiEdges(map.getTriangles());
+            edges = map.getVoronoiEdges();
             drawMap(); alert("Map loaded.");
         } catch (Exception ex) { alert("Error: " + ex.getMessage()); }
     }
