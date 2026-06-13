@@ -2,75 +2,96 @@
 
 ## Description du projet
 
-Ce projet a pour objectif de développer une application permettant d’orienter un patient vers l’hôpital le plus adapté à sa situation médicale.
+Ce projet a pour objectif de développer une application permettant d'orienter un patient vers l'hôpital le plus adapté à sa situation médicale.
 
-L’application repose sur une carte 2D et utilise une approche basée sur le diagramme de Voronoï et la triangulation de Delaunay.
-
-Les hôpitaux sont représentés comme des sites Voronoï, tandis que les patients ou lieux d’urgence sont représentés comme des points utilisateurs.
+L'application repose sur une carte 2D et utilise une approche basée sur le diagramme de Voronoï et la triangulation de Delaunay.
+Les hôpitaux sont représentés comme des sites Voronoï, tandis que les patients ou lieux d'urgence sont représentés comme des points utilisateurs.
 
 ## Objectif
 
-L’objectif n’est pas seulement de trouver l’hôpital le plus proche géographiquement, mais de proposer l’hôpital le plus adapté selon plusieurs critères :
+L'objectif n'est pas seulement de trouver l'hôpital le plus proche géographiquement, mais de proposer l'hôpital le plus adapté selon plusieurs critères :
 
 - la position du patient ;
-- le mode de transport ;
-- le temps de trajet ;
 - le niveau de saturation des hôpitaux ;
 - le service médical nécessaire ;
-- la disponibilité de l’hôpital.
+- la disponibilité de l'hôpital.
 
-## Cas d’usage principal
+## Cas d'usage principal
 
-Le cas d’usage principal est :
+Le cas d'usage principal est :
 
-**Orienter un patient vers l’hôpital le plus adapté.**
+**Orienter un patient vers l'hôpital le plus adapté.**
 
-Exemple : un ambulancier intervient auprès d’un patient présentant des signes d’AVC. Il place le patient sur la carte, choisit le mode de transport et indique le service médical nécessaire, par exemple la neurologie. L’application compare ensuite les hôpitaux selon leur distance, leur saturation et leurs services disponibles, puis recommande l’hôpital le plus adapté.
+Exemple : un dispatcher intervient auprès d'un patient présentant des signes d'AVC. Il place le patient sur la carte et indique le service médical nécessaire, par exemple la neurologie. L'application compare ensuite les hôpitaux selon leur distance, leur saturation et leurs services disponibles, puis recommande l'hôpital le plus adapté.
 
 ## Approche Voronoï
 
 Dans ce projet :
 
-- les sites Voronoï représentent les hôpitaux ou centres d’urgence ;
-- les points utilisateurs représentent les patients ou lieux d’urgence ;
+- les sites Voronoï représentent les hôpitaux ;
+- les points utilisateurs représentent les patients ou lieux d'urgence ;
 - les zones de Voronoï représentent les zones de couverture des hôpitaux ;
-- le système associe chaque patient à l’hôpital le plus pertinent.
+- le système associe chaque patient à l'hôpital le plus pertinent via l'`AssignmentService`.
 
-## Fonctionnalités prévues
+## Fonctionnalités implémentées
 
-- Ajouter un patient sur la carte
-- Ajouter ou gérer des hôpitaux
-- Choisir un mode de transport
-- Choisir un service médical nécessaire
-- Calculer les distances et les temps de trajet
-- Vérifier la saturation des hôpitaux
-- Exclure les hôpitaux non adaptés
-- Sélectionner l’hôpital le plus pertinent
-- Afficher le chemin recommandé
-- Afficher la zone Voronoï associée
-- Consulter les statistiques des zones
-- Importer une carte
-- Exporter une carte
+### Gestion des hôpitaux
+- Ajouter, supprimer ou déplacer un hôpital sur la carte
+- Afficher la liste des hôpitaux
+- Importer des hôpitaux depuis un fichier CSV
+
+### Gestion des patients
+- Ajouter, supprimer ou déplacer un patient
+- Afficher la liste des patients
+- Ajouter des patients aléatoirement
+- Afficher l'hôpital assigné à un patient
+
+### Visualisation
+- Afficher la triangulation de Delaunay
+- Afficher les zones de Voronoï
+- Cartes ASCII : Delaunay, Delaunay + patients, arêtes Voronoï, Voronoï + patients
+
+### Inspection
+- Inspecter un triangle Delaunay
+- Inspecter une zone Voronoï
+
+### Persistance
+- Sauvegarder et charger une carte (sérialisation binaire via `ObjectOutputStream`)
+
+### Recalcul automatique
+- Recalcul automatique de la triangulation de Delaunay et des zones Voronoï à chaque ajout, suppression ou déplacement d'un hôpital ou d'un patient
+
+## Architecture
+
+Le projet est structuré en trois couches distinctes :
+
+- **Classes métier** (`Hospital`, `Patient`, `Coordinate`, `Delaunay`, `VoronoiService`, `AssignmentService`, etc.) — logique applicative et algorithmes géométriques
+- **Interface graphique** (`MainMenu` JavaFX) — visualisation et interaction utilisateur
+- **Interface ligne de commande** (`CommandLineApp`) — point d'entrée alternatif en mode console
+
+La séparation entre les classes métier et les classes d'interface graphique a été un axe central du développement, afin d'éviter les duplications de logique et d'assurer la maintenabilité du projet.
 
 ## Acteurs du système
 
-### Acteurs primaires
+- **Dispatcher** — acteur principal interagissant avec le système pour gérer les hôpitaux, les patients, la visualisation, l'inspection et la persistance
 
-- Patient
-- Ambulancier
-- Chef de ville
-- Municipalité
+## Organisation de l'équipe
 
-### Acteurs secondaires
+| Membre | Rôle principal |
+|---|---|
+| Maïssa Tirsane | Classes métier et logique applicative |
+| Iyed Souissi | Classes métier et logique applicative |
+| Anas Chokri | Interface graphique JavaFX et visualisation |
+| Valery Vo-Van | Interface graphique JavaFX et visualisation |
 
-- Base hospitalière
-- Système de fichiers
+Le projet a été développé de manière collaborative via Git et GitHub.
 
-## Technologies utilisées 
+## Technologies utilisées
 
 - Java
 - JavaFX
-- UML
-- Diagramme de Voronoï
+- UML (diagrammes de classes, Use Case)
+- Algorithme de Voronoï
 - Triangulation de Delaunay
-
+- Sérialisation Java (`Serializable`, `ObjectOutputStream`)
+- GitHub (gestion des versions et collaboration)
