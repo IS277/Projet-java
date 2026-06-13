@@ -22,7 +22,7 @@ Le cas d'usage principal est :
 
 **Orienter un patient vers l'hôpital le plus adapté.**
 
-Exemple : un dispatcher intervient auprès d'un patient présentant des signes d'AVC. Il place le patient sur la carte et indique le service médical nécessaire, par exemple la neurologie. L'application compare ensuite les hôpitaux selon leur distance, leur saturation et leurs services disponibles, puis recommande l'hôpital le plus adapté.
+Exemple : un ambulancier intervient auprès d'un patient présentant des signes d'AVC. Il place le patient sur la carte et indique le service médical nécessaire, par exemple la neurologie. L'application compare ensuite les hôpitaux selon leur distance, leur saturation et leurs services disponibles, puis recommande l'hôpital le plus adapté.
 
 ## Approche Voronoï
 
@@ -73,18 +73,15 @@ La séparation entre les classes métier et les classes d'interface graphique a 
 
 ## Acteurs du système
 
-- **Dispatcher** — acteur principal interagissant avec le système pour gérer les hôpitaux, les patients, la visualisation, l'inspection et la persistance
+### Acteurs primaires
+- Patient
+- Ambulancier
+- Chef de ville
+- Municipalité
 
-## Organisation de l'équipe
-
-| Membre | Rôle principal |
-|---|---|
-| Maïssa Tirsane | Classes métier et logique applicative |
-| Iyed Souissi | Classes métier et logique applicative |
-| Anas Chokri | Interface graphique JavaFX et visualisation |
-| Valery Vo-Van | Interface graphique JavaFX et visualisation |
-
-Le projet a été développé de manière collaborative via Git et GitHub.
+### Acteurs secondaires
+- Base hospitalière
+- Système de fichiers
 
 ## Technologies utilisées
 
@@ -93,5 +90,4 @@ Le projet a été développé de manière collaborative via Git et GitHub.
 - UML (diagrammes de classes, Use Case)
 - Algorithme de Voronoï
 - Triangulation de Delaunay
-- Sérialisation Java (`Serializable`, `ObjectOutputStream`)
-- GitHub (gestion des versions et collaboration)
+
