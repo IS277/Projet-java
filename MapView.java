@@ -152,11 +152,13 @@ public class MapView {
             sep(), bold("Patient"),  patientName, svcCombo,
                                      row(btnPlace,
                                          btn("Clear", e -> {
-                                             map.getPatients().clear();
-                                             map.recompute();
+                                             map.clearPatients();
                                              assignments.clear();
                                              selectedPatient = null;
-                                             resultLabel.setText("—"); refreshEdges(); drawMap();
+                                             neighborZones.clear();
+                                             resultLabel.setText("—");
+                                             refreshEdges();
+                                             drawMap();
                                          })),
                                      new HBox(6, new Label("N :"), randomCountSpinner,
                                          btn("Add Random", e -> addRandomPatientsBulk(
@@ -420,9 +422,9 @@ public class MapView {
                     new Coordinate(latMin + rng.nextDouble() * (latMax - latMin),
                                    lonMin + rng.nextDouble() * (lonMax - lonMin)),
                     services[rng.nextInt(services.length)]);
-            map.getPatients().put(p.getId(), p);
+            map.addPatient(p);
         }
-        map.recompute();
+        
         for (Patient p : map.getPatients().values())
             if (!assignments.containsKey(p)) {
                 Hospital best = AssignmentService.findBestHospital(

@@ -163,4 +163,9 @@ public class MapManager implements Serializable {
         return null;
     }
 
+    public void clearPatients() {
+    patients.clear();
+    recompute();
+    }
+
 }
