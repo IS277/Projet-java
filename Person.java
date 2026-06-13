@@ -1,4 +1,3 @@
-
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -117,24 +116,3 @@ public abstract class Person implements Serializable{
     public int hashCode() {
         return Objects.hash(id);
     }
-}
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", position=" + position +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof Person)) return false;
-
-        Person other = (Person) obj;
-        return Objects.equals(id, other.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-}
