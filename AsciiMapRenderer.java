@@ -2,6 +2,9 @@ import java.util.List;
 
 public class AsciiMapRenderer {
 
+    private AsciiMapRenderer() {
+    }
+
     public static void drawHospitalsAndDelaunay(
             List<Hospital> hospitals,
             List<DelaunayTriangle> triangles,
