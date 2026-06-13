@@ -9,8 +9,23 @@ import javafx.stage.Stage;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * JavaFX view displaying geometric and operational details about a Delaunay triangle.
+ *
+ * <p>Covers geometry (surface, edges, circumcircle, compactness), corner-hospital
+ * patient loads, load-imbalance analysis and geometric quality assessment.</p>
+ *
+ * @author Maissa Tirsane, Anas Chokri, Iyed Souissi, Valery Vo-Van
+ * @version 1.0
+ */
 public class TriangleDetailView {
 
+    /**
+     * Opens the triangle detail window.
+     *
+     * @param t           triangle whose details are to be displayed
+     * @param assignments current patient-to-hospital assignment map
+     */
     public void show(DelaunayTriangle t, Map<Patient, Hospital> assignments) {
         Coordinate[] v = t.getVertices();
         Coordinate cc  = t.getCircumcenter();
