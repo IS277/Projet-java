@@ -13,9 +13,7 @@ import javafx.scene.input.MouseButton;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.beans.EventHandler;
 import java.io.*;
-import java.lang.classfile.Label;
 import java.util.*;
 
 public class MapView {
