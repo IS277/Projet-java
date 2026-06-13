@@ -143,7 +143,8 @@ public class MapView {
             bold("View"), new HBox(8, cbDelaunay, cbVoronoi),
                           new HBox(8, cbGrid, cbCircumcenters, cbLegend),
             sep(), bold("File"),    row(btn("Import CSV", e -> importCSV()),
-                                        btn("Save",       e -> saveMap()),
+                                        btn("Export CSV", e -> exportCSV())),
+                                    row(btn("Save",       e -> saveMap()),
                                         btn("Load",       e -> loadMap())),
             sep(), bold("Hospital"), hospName, row(btnAdd, btnRemove), infoLabel,
             sep(), bold("Patient"),  patientName, svcCombo,
@@ -354,6 +355,24 @@ public class MapView {
         String msg = n + " hôpital(s) importé(s).";
         if (!errors.isEmpty()) msg += "\n\nLignes ignorées :\n" + String.join("\n", errors);
         alert(msg);
+    }
+
+    private void exportCSV() {
+        if (map.getHospitals().isEmpty()) { alert("No hospitals to export."); return; }
+        File f = picker("Export Hospitals", "*.csv").showSaveDialog(stage);
+        if (f == null) return;
+        try (PrintWriter pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"))) {
+            pw.println("# id,name,lat,lon,capacity,service");
+            for (Hospital h : map.getHospitals().values()) {
+                String svc = h.getServices().isEmpty() ? "GENERAL"
+                        : h.getServices().iterator().next().name();
+                pw.printf("%s,%s,%.6f,%.6f,%d,%s%n",
+                        h.getId(), h.getName(),
+                        h.getPosition().getLatitude(), h.getPosition().getLongitude(),
+                        h.getMaxCapacity(), svc);
+            }
+            alert(map.getHospitals().size() + " hospital(s) exported.");
+        } catch (IOException ex) { alert("Error: " + ex.getMessage()); }
     }
 
     // Save via MapPersistenceService (serializes the entire MapManager)
