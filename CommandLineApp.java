@@ -5,16 +5,39 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+/**
+ * Command-line interface controller for the Emergency Dispatcher application.
+ *
+ * <p>Provides a text-based interactive menu exposing every feature of the application.
+ * All business operations are delegated to {@link MapManager}, which guarantees
+ * consistency of the domain model after each command.</p>
+ *
+ * @author Maissa Tirsane, Anas Chokri, Iyed Souissi, Valery Vo-Van
+ * @version 1.0
+ * @see MapManager
+ */
 public class CommandLineApp {
 
+    /** Shared domain model that keeps hospitals, patients and geometry in sync. */
     private MapManager manager;
+    /** Single scanner wrapping {@code System.in} to avoid opening multiple input streams. */
     private Scanner scanner;
 
+    /**
+     * Initialises the application with an empty domain model and opens
+     * a scanner on the standard input stream.
+     */
     public CommandLineApp() {
         manager = new MapManager();
         scanner = new Scanner(System.in);
     }
 
+    /**
+     * Starts the interactive menu loop and blocks until the user selects quit.
+     *
+     * <p>Each iteration prints the full menu, reads one line and dispatches
+     * to the appropriate private handler. The scanner is closed when the loop exits.</p>
+     */
     public void start() {
 
         boolean running = true;
@@ -147,6 +170,11 @@ public class CommandLineApp {
         scanner.close();
     }
 
+    /**
+     * Prompts for all required hospital attributes and registers the new hospital.
+     *
+     * <p>Input is validated at each step; any invalid value aborts the operation.</p>
+     */
     private void addHospital() {
 
         System.out.print("Hospital id: ");
@@ -199,6 +227,9 @@ public class CommandLineApp {
         System.out.println("Hospital added.");
     }
 
+    /**
+     * Prompts for a hospital identifier and removes the corresponding hospital.
+     */
     private void removeHospital() {
 
         System.out.print("Hospital id: ");
@@ -214,6 +245,9 @@ public class CommandLineApp {
         System.out.println("Hospital removed.");
     }
 
+    /**
+     * Prompts for a hospital identifier and new coordinates, then relocates the hospital.
+     */
     private void moveHospital() {
 
         System.out.print("Hospital id: ");
@@ -241,6 +275,13 @@ public class CommandLineApp {
         System.out.println("Hospital moved.");
     }
 
+    /**
+     * Interactively adds one or more medical services to the given hospital.
+     *
+     * <p>A loop is used because hospitals may offer multiple specialties simultaneously.</p>
+     *
+     * @param hospital hospital to which services will be added
+     */
     private void addServicesToHospital(Hospital hospital) {
         boolean adding = true;
 
@@ -278,6 +319,9 @@ public class CommandLineApp {
         }
     }
 
+    /**
+     * Prompts for all patient attributes, creates the patient and prints the assigned hospital.
+     */
     private void addPatient() {
 
         System.out.print("Patient id: ");
@@ -360,6 +404,9 @@ public class CommandLineApp {
         }
     }
 
+    /**
+     * Prompts for a patient identifier and removes the corresponding patient.
+     */
     private void removePatient() {
 
         System.out.print("Patient id: ");
@@ -375,6 +422,9 @@ public class CommandLineApp {
         System.out.println("Patient removed.");
     }
 
+    /**
+     * Prompts for a patient identifier and new coordinates, then relocates the patient.
+     */
     private void movePatient() {
 
         System.out.print("Patient id: ");
@@ -402,6 +452,9 @@ public class CommandLineApp {
         System.out.println("Patient moved.");
     }
 
+    /**
+     * Prints the string representation of every registered patient.
+     */
     private void showPatients() {
 
         System.out.println();
@@ -412,6 +465,9 @@ public class CommandLineApp {
         }
     }
 
+    /**
+     * Prompts for a patient identifier and prints the assigned hospital with its current load.
+     */
     private void showAssignedHospital() {
 
         System.out.print("Patient id: ");
@@ -447,6 +503,11 @@ public class CommandLineApp {
                 + hospital.getMaxCapacity());
     }
 
+    /**
+     * Prompts for a count and generates that many randomly positioned patients.
+     *
+     * <p>Useful for stress-testing the assignment algorithm with large populations.</p>
+     */
     private void addRandomPatients() {
 
         System.out.print("Number of patients: ");
@@ -492,6 +553,9 @@ public class CommandLineApp {
         }
     }
 
+    /**
+     * Prints each Delaunay triangle with its geometry and patient-load imbalance.
+     */
     private void showDelaunay() {
 
         System.out.println();
@@ -557,6 +621,9 @@ public class CommandLineApp {
         }
     }
 
+    /**
+     * Prints statistical details for every Voronoi zone.
+     */
     private void showVoronoiZones() {
 
         System.out.println();
@@ -585,6 +652,9 @@ public class CommandLineApp {
         }
     }
 
+    /**
+     * Prints the string representation of every registered hospital.
+     */
     private void showHospitals() {
 
         System.out.println();
@@ -595,6 +665,11 @@ public class CommandLineApp {
         }
     }
 
+    /**
+     * Prompts for a CSV file path and imports one hospital per valid line.
+     *
+     * <p>Lines with fewer than six fields are skipped to tolerate comment lines.</p>
+     */
     private void importHospitalsFromCsv() {
 
         System.out.print("CSV file path: ");
@@ -652,6 +727,9 @@ public class CommandLineApp {
         }
     }
 
+    /**
+     * Prompts for a file name and serialises the entire domain model to disk.
+     */
     private void saveMap() {
 
         System.out.print("File name: ");
@@ -673,6 +751,10 @@ public class CommandLineApp {
         }
     }
 
+    /**
+     * Prompts for a file name, deserialises the domain model and reinitialises
+     * all transient geometric fields.
+     */
     private void loadMap() {
 
         System.out.print("File name: ");
@@ -695,6 +777,12 @@ public class CommandLineApp {
         }
     }
 
+    /**
+     * Reads a {@code double} value from standard input after displaying a prompt.
+     *
+     * @param message prompt string to display before reading
+     * @return the parsed value, or {@code null} if the input is not a valid number
+     */
     private Double readDouble(String message) {
         System.out.print(message);
 
@@ -706,6 +794,12 @@ public class CommandLineApp {
         }
     }
 
+    /**
+     * Reads an {@code int} value from standard input after displaying a prompt.
+     *
+     * @param message prompt string to display before reading
+     * @return the parsed value, or {@code null} if the input is not a valid integer
+     */
     private Integer readInteger(String message) {
         System.out.print(message);
 
@@ -717,6 +811,10 @@ public class CommandLineApp {
         }
     }
 
+    /**
+     * Lists all triangles and prompts the dispatcher to select one by index,
+     * then prints its geometric details.
+     */
     private void inspectTriangle() {
 
         List<DelaunayTriangle> triangles = manager.getTriangles();
@@ -749,6 +847,10 @@ public class CommandLineApp {
         System.out.println("Distance CA: " + triangle.getDistanceCA());
     }
 
+    /**
+     * Lists all Voronoi zones and prompts the dispatcher to select one by index,
+     * then prints its statistical details.
+     */
     private void inspectZone() {
 
         List<VoronoiZone> zones = manager.getZones();
@@ -781,6 +883,9 @@ public class CommandLineApp {
         System.out.println("Average distance: " + zone.getAverageDistanceToHospital());
     }
 
+    /**
+     * Renders a character-based map showing hospitals and Delaunay edges.
+     */
     private void showAsciiDelaunay() {
 
         AsciiMapRenderer.drawHospitalsAndDelaunay(
@@ -790,6 +895,9 @@ public class CommandLineApp {
                 25);
     }
 
+    /**
+     * Renders a character-based map showing hospitals, patients and Delaunay edges.
+     */
     private void showAsciiDelaunayWithPatients() {
 
         if (manager.getHospitals().isEmpty()) {
@@ -805,6 +913,9 @@ public class CommandLineApp {
                 25);
     }
 
+    /**
+     * Renders a character-based map showing hospitals and Voronoi edges.
+     */
     private void showAsciiVoronoi() {
 
         if (manager.getHospitals().isEmpty()) {
@@ -819,6 +930,9 @@ public class CommandLineApp {
                 25);
     }
 
+    /**
+     * Renders a character-based map showing hospitals, patients and Voronoi edges.
+     */
     private void showAsciiVoronoiWithPatients() {
 
         if (manager.getHospitals().isEmpty()) {
