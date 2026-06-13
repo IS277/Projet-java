@@ -10,28 +10,23 @@ public class MapPersistenceService {
             MapManager manager,
             String fileName) throws IOException {
 
-        ObjectOutputStream out =
+        try (ObjectOutputStream out =
                 new ObjectOutputStream(
-                        new FileOutputStream(fileName));
+                        new FileOutputStream(fileName))) {
 
-        out.writeObject(manager);
-
-        out.close();
+            out.writeObject(manager);
+        }
     }
 
     public MapManager loadMap(
             String fileName)
             throws IOException, ClassNotFoundException {
 
-        ObjectInputStream in =
+        try (ObjectInputStream in =
                 new ObjectInputStream(
-                        new FileInputStream(fileName));
+                        new FileInputStream(fileName))) {
 
-        MapManager manager =
-                (MapManager) in.readObject();
-
-        in.close();
-
-        return manager;
+            return (MapManager) in.readObject();
+        }
     }
 }
