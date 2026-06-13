@@ -1,35 +1,38 @@
 import java.util.Objects;
 
 /**
- * Classe métier représentant une arête du diagramme de Voronoï.
+ * Geometry class representing an edge of the Voronoi diagram.
  *
- * Une arête de Voronoï est définie par deux coordonnées :
- * un point de départ et un point d'arrivée.
+ * A Voronoi edge is defined by two coordinates: a start point and an end
+ * point. In this project, Voronoi edges are generated from neighboring
+ * {@link DelaunayTriangle} circumcenters and represent the boundaries between
+ * hospital influence zones.
  *
- * Dans le projet, ces arêtes sont calculées à partir de la
- * triangulation de Delaunay et permettent de représenter
- * les frontières entre les zones d'influence des hôpitaux.
+ * The complete set of Voronoi edges forms the Voronoi diagram associated with
+ * the Delaunay triangulation.
  *
- * @author Équipe Projet Emergency Dispatcher
+ * <p><b>Class type:</b> Geometry / Model class.</p>
+ *
+ * @author Maïssa Tirsane, Anas Chokri, Iyed Souissi, Valery Vo-Van
  * @version 1.0
  */
 public class VoronoiEdge {
 
     /**
-     * Point de départ de l'arête.
+     * Starting coordinate of the Voronoi edge.
      */
     private Coordinate start;
 
     /**
-     * Point d'arrivée de l'arête.
+     * Ending coordinate of the Voronoi edge.
      */
     private Coordinate end;
 
     /**
-     * Construit une nouvelle arête de Voronoï.
+     * Creates a new Voronoi edge.
      *
-     * @param start point de départ
-     * @param end point d'arrivée
+     * @param start starting coordinate of the edge
+     * @param end ending coordinate of the edge
      */
     public VoronoiEdge(Coordinate start, Coordinate end) {
         this.start = start;
@@ -37,29 +40,30 @@ public class VoronoiEdge {
     }
 
     /**
-     * Retourne le point de départ de l'arête.
+     * Returns the starting coordinate of the edge.
      *
-     * @return coordonnée de départ
+     * @return start coordinate
      */
     public Coordinate getStart() {
         return start;
     }
 
     /**
-     * Retourne le point d'arrivée de l'arête.
+     * Returns the ending coordinate of the edge.
      *
-     * @return coordonnée d'arrivée
+     * @return end coordinate
      */
     public Coordinate getEnd() {
         return end;
     }
 
     /**
-     * Retourne une représentation textuelle de l'arête.
+     * Returns a textual representation of the Voronoi edge.
      *
-     * Utile pour l'affichage, les tests et le débogage.
+     * This method is mainly useful for debugging, logging and console-based
+     * displays during development and testing.
      *
-     * @return description complète de l'arête
+     * @return complete edge description
      */
     @Override
     public String toString() {
@@ -70,13 +74,13 @@ public class VoronoiEdge {
     }
 
     /**
-     * Compare deux arêtes de Voronoï.
+     * Compares this Voronoi edge with another object.
      *
-     * Deux arêtes sont considérées égales si elles possèdent
-     * les mêmes coordonnées de départ et d'arrivée.
+     * Two Voronoi edges are considered equal when they have the same start
+     * coordinate and the same end coordinate.
      *
-     * @param obj objet à comparer
-     * @return true si les arêtes sont identiques, false sinon
+     * @param obj object to compare
+     * @return true if both edges are identical, false otherwise
      */
     @Override
     public boolean equals(Object obj) {
@@ -96,12 +100,13 @@ public class VoronoiEdge {
     }
 
     /**
-     * Génère un code de hachage cohérent avec equals().
+     * Generates a hash code consistent with equals().
      *
-     * Cette méthode permet d'utiliser correctement les objets
-     * VoronoiEdge dans les collections de type HashSet ou HashMap.
+     * This method allows VoronoiEdge objects to be correctly stored and
+     * retrieved from hash-based collections such as {@link java.util.HashSet}
+     * and {@link java.util.HashMap}.
      *
-     * @return code de hachage de l'arête
+     * @return edge hash code
      */
     @Override
     public int hashCode() {

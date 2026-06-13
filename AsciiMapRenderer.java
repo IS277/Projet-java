@@ -1,32 +1,38 @@
 import java.util.List;
 
 /**
- * Classe utilitaire responsable de l'affichage ASCII des cartes.
+ * Utility class responsible for rendering ASCII maps in the console.
  *
- * Cette classe appartient à la couche d'interface console. Elle ne modifie pas
- * le modèle métier : elle reçoit des hôpitaux, des patients, des triangles ou
- * des arêtes de Voronoï, puis les affiche dans une grille de caractères.
+ * This class belongs to the presentation layer of the application.
+ * It does not modify the business model: it only receives hospitals,
+ * patients, Delaunay triangles or Voronoi edges and displays them
+ * in a character-based grid.
  *
- * Toutes les méthodes sont statiques car la classe ne conserve aucun état.
+ * All methods are static because the class does not store any state.
  *
- * @author Équipe Projet Emergency Dispatcher
+ * <p><b>Class type:</b> Console rendering utility class.</p>
+ *
+ * @author Maïssa Tirsane, Anas Chokri, Iyed Souissi, Valery Vo-Van
  * @version 1.0
  */
 public class AsciiMapRenderer {
 
     /**
-     * Constructeur privé pour empêcher l'instanciation de cette classe utilitaire.
+     * Private constructor used to prevent instantiation of this utility class.
      */
     private AsciiMapRenderer() {
     }
 
     /**
-     * Affiche les hôpitaux et la triangulation de Delaunay dans la console.
+     * Displays hospitals and the Delaunay triangulation in the console.
      *
-     * @param hospitals liste des hôpitaux à afficher
-     * @param triangles triangles de Delaunay à dessiner
-     * @param width largeur de la grille ASCII
-     * @param height hauteur de la grille ASCII
+     * Hospitals are represented by numbers and Delaunay edges are represented
+     * with {@code *} characters.
+     *
+     * @param hospitals hospitals to display
+     * @param triangles Delaunay triangles to draw
+     * @param width width of the ASCII grid
+     * @param height height of the ASCII grid
      */
     public static void drawHospitalsAndDelaunay(
             List<Hospital> hospitals,
@@ -44,8 +50,7 @@ public class AsciiMapRenderer {
             maxY = Math.max(maxY, hospital.getPosition().getLongitude());
         }
 
-        // Les arêtes des triangles sont dessinées avant les hôpitaux
-        // pour que les hôpitaux restent visibles par-dessus.
+        // Edges are drawn before hospitals so that hospital markers stay visible.
         for (DelaunayTriangle triangle : triangles) {
             Coordinate[] vertices = triangle.getVertices();
 
@@ -60,13 +65,13 @@ public class AsciiMapRenderer {
     }
 
     /**
-     * Affiche les hôpitaux, les patients et la triangulation de Delaunay.
+     * Displays hospitals, patients and the Delaunay triangulation in the console.
      *
-     * @param hospitals liste des hôpitaux à afficher
-     * @param patients liste des patients à afficher
-     * @param triangles triangles de Delaunay à dessiner
-     * @param width largeur de la grille ASCII
-     * @param height hauteur de la grille ASCII
+     * @param hospitals hospitals to display
+     * @param patients patients to display
+     * @param triangles Delaunay triangles to draw
+     * @param width width of the ASCII grid
+     * @param height height of the ASCII grid
      */
     public static void drawHospitalsPatientsAndDelaunay(
             List<Hospital> hospitals,
@@ -112,12 +117,12 @@ public class AsciiMapRenderer {
     }
 
     /**
-     * Affiche les hôpitaux et les arêtes du diagramme de Voronoï.
+     * Displays hospitals and Voronoi edges in the console.
      *
-     * @param hospitals liste des hôpitaux à afficher
-     * @param edges arêtes de Voronoï à dessiner
-     * @param width largeur de la grille ASCII
-     * @param height hauteur de la grille ASCII
+     * @param hospitals hospitals to display
+     * @param edges Voronoi edges to draw
+     * @param width width of the ASCII grid
+     * @param height height of the ASCII grid
      */
     public static void drawHospitalsAndVoronoi(
             List<Hospital> hospitals,
@@ -159,13 +164,13 @@ public class AsciiMapRenderer {
     }
 
     /**
-     * Affiche les hôpitaux, les patients et les arêtes de Voronoï.
+     * Displays hospitals, patients and Voronoi edges in the console.
      *
-     * @param hospitals liste des hôpitaux à afficher
-     * @param patients liste des patients à afficher
-     * @param edges arêtes de Voronoï à dessiner
-     * @param width largeur de la grille ASCII
-     * @param height hauteur de la grille ASCII
+     * @param hospitals hospitals to display
+     * @param patients patients to display
+     * @param edges Voronoi edges to draw
+     * @param width width of the ASCII grid
+     * @param height height of the ASCII grid
      */
     public static void drawHospitalsPatientsAndVoronoi(
             List<Hospital> hospitals,
@@ -215,11 +220,11 @@ public class AsciiMapRenderer {
     }
 
     /**
-     * Crée une grille ASCII initialisée avec des points.
+     * Creates an ASCII grid initialized with dots.
      *
-     * @param width largeur de la grille
-     * @param height hauteur de la grille
-     * @return grille initialisée
+     * @param width width of the grid
+     * @param height height of the grid
+     * @return initialized grid
      */
     private static char[][] createGrid(int width, int height) {
         char[][] grid = new char[height][width];
@@ -234,18 +239,18 @@ public class AsciiMapRenderer {
     }
 
     /**
-     * Dessine une ligne entre deux coordonnées sur la grille.
+     * Draws a line between two coordinates on the grid.
      *
-     * La méthode est utilisée pour représenter les arêtes de Delaunay
-     * et les arêtes de Voronoï.
+     * This method is used to represent both Delaunay edges and Voronoi edges.
+     * It follows the idea of Bresenham's line drawing algorithm.
      *
-     * @param grid grille ASCII
-     * @param a première coordonnée
-     * @param b seconde coordonnée
-     * @param maxX valeur maximale en abscisse
-     * @param maxY valeur maximale en ordonnée
-     * @param width largeur de la grille
-     * @param height hauteur de la grille
+     * @param grid ASCII grid
+     * @param a first coordinate
+     * @param b second coordinate
+     * @param maxX maximum x value used for scaling
+     * @param maxY maximum y value used for scaling
+     * @param width width of the grid
+     * @param height height of the grid
      */
     private static void drawLine(
             char[][] grid,
@@ -293,12 +298,12 @@ public class AsciiMapRenderer {
     }
 
     /**
-     * Convertit une coordonnée en position horizontale sur la grille.
+     * Converts a coordinate into a horizontal grid position.
      *
-     * @param coordinate coordonnée à convertir
-     * @param maxX valeur maximale utilisée pour normaliser l'affichage
-     * @param width largeur de la grille
-     * @return position horizontale dans la grille
+     * @param coordinate coordinate to convert
+     * @param maxX maximum x value used for scaling
+     * @param width width of the grid
+     * @return horizontal position in the grid
      */
     private static int toGridX(Coordinate coordinate, double maxX, int width) {
         if (maxX == 0) {
@@ -310,12 +315,12 @@ public class AsciiMapRenderer {
     }
 
     /**
-     * Convertit une coordonnée en position verticale sur la grille.
+     * Converts a coordinate into a vertical grid position.
      *
-     * @param coordinate coordonnée à convertir
-     * @param maxY valeur maximale utilisée pour normaliser l'affichage
-     * @param height hauteur de la grille
-     * @return position verticale dans la grille
+     * @param coordinate coordinate to convert
+     * @param maxY maximum y value used for scaling
+     * @param height height of the grid
+     * @return vertical position in the grid
      */
     private static int toGridY(Coordinate coordinate, double maxY, int height) {
         if (maxY == 0) {
@@ -327,15 +332,15 @@ public class AsciiMapRenderer {
     }
 
     /**
-     * Borne une valeur entre un minimum et un maximum.
+     * Clamps a value between a minimum and a maximum.
      *
-     * Cette méthode évite les erreurs d'indice lorsque des coordonnées
-     * dépassent légèrement les limites de la grille.
+     * This avoids array index errors when a rendered point is close
+     * to the grid boundary.
      *
-     * @param value valeur à borner
-     * @param min valeur minimale
-     * @param max valeur maximale
-     * @return valeur bornée
+     * @param value value to clamp
+     * @param min minimum allowed value
+     * @param max maximum allowed value
+     * @return clamped value
      */
     private static int clamp(int value, int min, int max) {
         if (value < min) {
@@ -350,16 +355,17 @@ public class AsciiMapRenderer {
     }
 
     /**
-     * Affiche les hôpitaux sur la grille.
+     * Draws hospital markers on the grid.
      *
-     * Les hôpitaux sont affichés après les arêtes afin de rester visibles.
+     * Hospitals are drawn after edges so that they remain visible
+     * if an edge and a hospital overlap.
      *
-     * @param grid grille ASCII
-     * @param hospitals liste des hôpitaux
-     * @param maxX valeur maximale en abscisse
-     * @param maxY valeur maximale en ordonnée
-     * @param width largeur de la grille
-     * @param height hauteur de la grille
+     * @param grid ASCII grid
+     * @param hospitals hospitals to draw
+     * @param maxX maximum x value used for scaling
+     * @param maxY maximum y value used for scaling
+     * @param width width of the grid
+     * @param height height of the grid
      */
     private static void drawHospitals(
             char[][] grid,
@@ -380,14 +386,14 @@ public class AsciiMapRenderer {
     }
 
     /**
-     * Affiche les patients sur la grille.
+     * Draws patient markers on the grid.
      *
-     * @param grid grille ASCII
-     * @param patients liste des patients
-     * @param maxX valeur maximale en abscisse
-     * @param maxY valeur maximale en ordonnée
-     * @param width largeur de la grille
-     * @param height hauteur de la grille
+     * @param grid ASCII grid
+     * @param patients patients to draw
+     * @param maxX maximum x value used for scaling
+     * @param maxY maximum y value used for scaling
+     * @param width width of the grid
+     * @param height height of the grid
      */
     private static void drawPatients(
             char[][] grid,
@@ -406,9 +412,9 @@ public class AsciiMapRenderer {
     }
 
     /**
-     * Affiche la grille ASCII dans la console.
+     * Prints the ASCII grid in the console.
      *
-     * @param grid grille à afficher
+     * @param grid grid to print
      */
     private static void printGrid(char[][] grid) {
         for (int y = 0; y < grid.length; y++) {
@@ -420,9 +426,9 @@ public class AsciiMapRenderer {
     }
 
     /**
-     * Affiche la légende associant les numéros aux hôpitaux.
+     * Prints the legend that associates numbers with hospitals.
      *
-     * @param hospitals liste des hôpitaux affichés
+     * @param hospitals displayed hospitals
      */
     private static void printHospitalLegend(List<Hospital> hospitals) {
         System.out.println();

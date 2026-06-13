@@ -1,45 +1,48 @@
 import java.util.Objects;
 
 /**
- * Classe géométrique représentant un triangle de la triangulation de Delaunay.
+ * Geometry class representing a triangle in the Delaunay triangulation.
  *
- * Un triangle est défini par trois sommets de type {@link Coordinate}.
- * Cette classe fournit les méthodes nécessaires pour construire et analyser
- * la triangulation :
- * calcul du cercle circonscrit, du centre du cercle, de la surface et des
- * distances entre sommets.
+ * A triangle is defined by three vertices represented by {@link Coordinate}
+ * objects. This class provides the geometric operations required to build and
+ * analyze the Delaunay triangulation, such as circumcircle testing,
+ * circumcenter computation, surface calculation and edge comparison.
  *
- * @author Équipe Projet Emergency Dispatcher
+ * The circumcenter of a Delaunay triangle is also used as a vertex of the
+ * corresponding Voronoi diagram.
+ *
+ * <p><b>Class type:</b> Geometry / Model class.</p>
+ *
+ * @author Maïssa Tirsane, Anas Chokri, Iyed Souissi, Valery Vo-Van
  * @version 1.0
  */
 public class DelaunayTriangle {
 
     /**
-     * Sommets du triangle.
+     * Vertices of the triangle.
      */
     private Coordinate[] vertices;
 
     /**
-     * Construit un triangle à partir de trois coordonnées.
+     * Creates a triangle from three coordinates.
      *
-     * @param a premier sommet du triangle
-     * @param b deuxième sommet du triangle
-     * @param c troisième sommet du triangle
+     * @param a first vertex of the triangle
+     * @param b second vertex of the triangle
+     * @param c third vertex of the triangle
      */
     public DelaunayTriangle(Coordinate a, Coordinate b, Coordinate c) {
         this.vertices = new Coordinate[] { a, b, c };
     }
 
     /**
-     * Vérifie si une coordonnée se trouve à l'intérieur du cercle circonscrit
-     * au triangle.
+     * Checks whether a coordinate lies inside the circumcircle of the triangle.
      *
-     * Cette méthode est essentielle dans l'algorithme de Bowyer-Watson :
-     * si un nouveau point est dans le cercle circonscrit d'un triangle,
-     * ce triangle ne respecte plus la propriété de Delaunay.
+     * This method is essential in the Bowyer-Watson algorithm. When a new point
+     * is inserted, every triangle whose circumcircle contains that point no
+     * longer satisfies the Delaunay property and must be removed.
      *
-     * @param p coordonnée à tester
-     * @return true si la coordonnée est dans le cercle circonscrit
+     * @param p coordinate to test
+     * @return true if the coordinate is inside the circumcircle, false otherwise
      */
     public boolean isInCircumcircle(Coordinate p) {
 
@@ -50,7 +53,7 @@ public class DelaunayTriangle {
         double cx = vertices[2].getLatitude();
         double cy = vertices[2].getLongitude();
 
-        // Le centre du cercle circonscrit est équidistant des trois sommets.
+        // The circumcenter is equidistant from the three vertices.
         double d = 2 * (ax * (by - cy) + bx * (cy - ay) + cx * (ay - by));
 
         double ux = ((ax * ax + ay * ay) * (by - cy)
@@ -70,20 +73,22 @@ public class DelaunayTriangle {
     }
 
     /**
-     * Retourne les trois sommets du triangle.
+     * Returns the three vertices of the triangle.
      *
-     * @return tableau contenant les sommets du triangle
+     * @return array containing the triangle vertices
      */
     public Coordinate[] getVertices() {
         return vertices;
     }
 
     /**
-     * Calcule le centre du cercle circonscrit au triangle.
+     * Computes the circumcenter of the triangle.
      *
-     * Ce point devient un sommet du diagramme de Voronoï.
+     * The circumcenter is the center of the circle passing through the three
+     * vertices. In this project, this point is used to build Voronoi diagram
+     * vertices from the Delaunay triangulation.
      *
-     * @return centre du cercle circonscrit
+     * @return circumcenter of the triangle
      */
     public Coordinate getCircumcenter() {
 
@@ -114,13 +119,14 @@ public class DelaunayTriangle {
     }
 
     /**
-     * Indique si deux triangles partagent une arête.
+     * Checks whether this triangle shares an edge with another triangle.
      *
-     * Deux triangles partagent une arête lorsqu'ils ont exactement
-     * deux sommets en commun.
+     * Two triangles share an edge when they have exactly two vertices in
+     * common. This relationship is used when creating Voronoi edges between
+     * neighboring Delaunay triangles.
      *
-     * @param other autre triangle à comparer
-     * @return true si les deux triangles partagent une arête
+     * @param other triangle to compare with
+     * @return true if both triangles share an edge, false otherwise
      */
     public boolean sharesEdgeWith(DelaunayTriangle other) {
         int commonVertices = 0;
@@ -137,10 +143,10 @@ public class DelaunayTriangle {
     }
 
     /**
-     * Vérifie si le triangle contient la position d'un hôpital.
+     * Checks whether the triangle contains the position of a hospital.
      *
-     * @param hospital hôpital à tester
-     * @return true si la position de l'hôpital est un sommet du triangle
+     * @param hospital hospital to test
+     * @return true if the hospital position is one of the triangle vertices
      */
     public boolean containsHospital(Hospital hospital) {
         Coordinate position = hospital.getPosition();
@@ -155,9 +161,9 @@ public class DelaunayTriangle {
     }
 
     /**
-     * Calcule la surface du triangle.
+     * Computes the surface area of the triangle.
      *
-     * @return surface du triangle
+     * @return triangle surface area
      */
     public double getSurface() {
         double ax = vertices[0].getLatitude();
@@ -177,36 +183,36 @@ public class DelaunayTriangle {
     }
 
     /**
-     * Calcule la distance entre le premier et le deuxième sommet.
+     * Computes the length of edge AB.
      *
-     * @return distance entre A et B
+     * @return distance between the first and second vertices
      */
     public double getDistanceAB() {
         return vertices[0].distanceTo(vertices[1]);
     }
 
     /**
-     * Calcule la distance entre le deuxième et le troisième sommet.
+     * Computes the length of edge BC.
      *
-     * @return distance entre B et C
+     * @return distance between the second and third vertices
      */
     public double getDistanceBC() {
         return vertices[1].distanceTo(vertices[2]);
     }
 
     /**
-     * Calcule la distance entre le troisième et le premier sommet.
+     * Computes the length of edge CA.
      *
-     * @return distance entre C et A
+     * @return distance between the third and first vertices
      */
     public double getDistanceCA() {
         return vertices[2].distanceTo(vertices[0]);
     }
 
     /**
-     * Retourne une représentation textuelle du triangle.
+     * Returns a textual representation of the triangle.
      *
-     * @return description du triangle
+     * @return triangle description
      */
     @Override
     public String toString() {
@@ -214,13 +220,13 @@ public class DelaunayTriangle {
     }
 
     /**
-     * Compare deux triangles.
+     * Compares this triangle with another object.
      *
-     * Deux triangles sont considérés égaux s'ils possèdent les mêmes sommets
-     * dans le même ordre.
+     * Two triangles are considered equal when they have the same vertices
+     * in the same order.
      *
-     * @param obj objet à comparer
-     * @return true si les deux triangles sont identiques
+     * @param obj object to compare
+     * @return true if both triangles are identical, false otherwise
      */
     @Override
     public boolean equals(Object obj) {
@@ -240,9 +246,9 @@ public class DelaunayTriangle {
     }
 
     /**
-     * Génère le code de hachage du triangle.
+     * Generates a hash code consistent with equals().
      *
-     * @return code de hachage
+     * @return triangle hash code
      */
     @Override
     public int hashCode() {

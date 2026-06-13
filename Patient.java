@@ -1,29 +1,34 @@
 /**
- * Classe métier représentant un patient du système.
+ * Business class representing a patient in the emergency dispatch system.
  *
- * Un patient possède une identité, une position géographique
- * et un type de service médical requis.
+ * A patient is characterized by an identity, a geographic position and a
+ * required medical service. The required service is used during the assignment
+ * process to determine which hospitals are able to provide the appropriate
+ * care.
  *
- * Cette classe hérite de la classe Person afin de réutiliser
- * les informations communes (identifiant, nom et position).
+ * This class extends {@link Person} in order to reuse the common attributes
+ * shared by all people in the system, such as the identifier, name and
+ * geographic position.
  *
- * @author Équipe Projet Emergency Dispatcher
+ * <p><b>Class type:</b> Business / Model class.</p>
+ *
+ * @author Maïssa Tirsane, Anas Chokri, Iyed Souissi, Valery Vo-Van
  * @version 1.0
  */
 public class Patient extends Person {
 
     /**
-     * Service médical dont le patient a besoin.
+     * Medical service required by the patient.
      */
     private HospitalServiceType requiredService;
 
     /**
-     * Construit un nouveau patient.
+     * Creates a new patient.
      *
-     * @param id identifiant unique du patient
-     * @param name nom du patient
-     * @param position position géographique du patient
-     * @param requiredService service médical demandé
+     * @param id unique patient identifier
+     * @param name patient name
+     * @param position geographic position of the patient
+     * @param requiredService medical service required by the patient
      */
     public Patient(
             String id,
@@ -36,24 +41,25 @@ public class Patient extends Person {
     }
 
     /**
-     * Retourne le service médical requis par le patient.
+     * Returns the medical service required by the patient.
      *
-     * Cette information est utilisée lors de l'affectation
-     * du patient à un hôpital afin de vérifier que celui-ci
-     * possède le service demandé.
+     * This information is used by {@link AssignmentService} when searching
+     * for the most suitable hospital. Hospitals that do not provide this
+     * service are automatically excluded from the selection process.
      *
-     * @return service médical requis
+     * @return required medical service
      */
     public HospitalServiceType getRequiredService() {
         return requiredService;
     }
 
     /**
-     * Retourne une représentation textuelle du patient.
+     * Returns a textual representation of the patient.
      *
-     * Utile pour l'affichage, le débogage et les tests.
+     * This method is mainly useful for debugging, logging and console-based
+     * displays during testing.
      *
-     * @return description complète du patient
+     * @return complete patient description
      */
     @Override
     public String toString() {
