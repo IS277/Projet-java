@@ -7,6 +7,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -68,21 +69,21 @@ public class SimulationView {
     }
 
     private void addPatient(HospitalServiceType svc) {
-        Patient p = new Patient("SIM" + pid, "Sim-" + pid,
-                new Coordinate(5 + rng.nextDouble() * 150, 5 + rng.nextDouble() * 230), svc);
-        pid++;
-        Hospital best = AssignmentService.findBestHospital(
-        p,
-        hospitals);
-        if (best != null) {
-            log.appendText(String.format("%-12s → %-18s  dist=%.1f  sat=%.0f%%%n",
-                    p.getName(), best.getName(),
-                    p.getPosition().distanceTo(best.getPosition()),
-                    best.getSaturationRate() * 100));
-        } else {
-            log.appendText(p.getName() + " → aucun hôpital disponible pour " + svc.name() + "\n");
-        }
-        if (onPatientPlaced != null) onPatientPlaced.accept(p);
+        try {
+            Patient p = new Patient("SIM" + pid, "Sim-" + pid,
+                    new Coordinate(5 + rng.nextDouble() * 150, 5 + rng.nextDouble() * 230), svc);
+            pid++;
+            Hospital best = AssignmentService.findBestHospital(p, hospitals);
+            if (best != null) {
+                log.appendText(String.format("%-12s → %-18s  dist=%.1f  sat=%.0f%%%n",
+                        p.getName(), best.getName(),
+                        p.getPosition().distanceTo(best.getPosition()),
+                        best.getSaturationRate() * 100));
+            } else {
+                log.appendText(p.getName() + " → aucun hôpital disponible pour " + svc.name() + "\n");
+            }
+            if (onPatientPlaced != null) onPatientPlaced.accept(p);
+        } catch (Exception ex) { log.appendText("Error: " + ex.getMessage() + "\n"); }
     }
 
     private Label hospitalStatus(Hospital h) {

@@ -84,20 +84,22 @@ public class MapView {
             lastMX = e.getX(); lastMY = e.getY(); wasDragged = false;
         });
         canvas.setOnMouseDragged(e -> {
-            wasDragged = true;
-            if (panning) {
-                panX += e.getX() - lastMX; panY += e.getY() - lastMY; drawMap();
-            } else if (dragged != null) {
-                map.moveHospital(dragged.getId(), new Coordinate(screenToLat(e.getY()), screenToLon(e.getX())));
-                refreshEdges(); drawMap();
-            } else if (draggedPatient != null) {
-                map.movePatient(draggedPatient.getId(), new Coordinate(screenToLat(e.getY()), screenToLon(e.getX())));
-                Hospital best = AssignmentService.findBestHospital(
-                        draggedPatient, new ArrayList<>(map.getHospitals().values()));
-                if (best != null) assignments.put(draggedPatient, best);
-                refreshEdges(); drawMap();
-            }
-            lastMX = e.getX(); lastMY = e.getY();
+            try {
+                wasDragged = true;
+                if (panning) {
+                    panX += e.getX() - lastMX; panY += e.getY() - lastMY; drawMap();
+                } else if (dragged != null) {
+                    map.moveHospital(dragged.getId(), new Coordinate(screenToLat(e.getY()), screenToLon(e.getX())));
+                    refreshEdges(); drawMap();
+                } else if (draggedPatient != null) {
+                    map.movePatient(draggedPatient.getId(), new Coordinate(screenToLat(e.getY()), screenToLon(e.getX())));
+                    Hospital best = AssignmentService.findBestHospital(
+                            draggedPatient, new ArrayList<>(map.getHospitals().values()));
+                    if (best != null) assignments.put(draggedPatient, best);
+                    refreshEdges(); drawMap();
+                }
+                lastMX = e.getX(); lastMY = e.getY();
+            } catch (Exception ex) { statusBar.setText("Error: " + ex.getMessage()); }
         });
         canvas.setOnMouseReleased(e -> { dragged = null; draggedPatient = null; panning = false; });
         canvas.setOnMouseClicked(e -> { if (!wasDragged) handleClick(e.getX(), e.getY(), e.getButton()); });
@@ -191,6 +193,7 @@ public class MapView {
 
     // Canvas click handler — 3 modes: add hospital / place patient / select
     private void handleClick(double mx, double my, MouseButton button) {
+        try {
         if (addingHospital) {
             String name = hospName.getText().isBlank() ? "H" + hid : hospName.getText();
             Hospital h  = new Hospital("H" + hid++, name,
@@ -259,6 +262,7 @@ public class MapView {
             }
         }
         drawMap();
+        } catch (Exception ex) { infoLabel.setText("Error: " + ex.getMessage()); }
     }
 
     // --- Model ---
@@ -272,9 +276,11 @@ public class MapView {
 
     // Recomputes only the Voronoi edges after a MapManager API call (which already ran recompute).
     private void refreshEdges() {
-        edges = map.getHospitals().size() >= 3
-                ? new VoronoiService().getVoronoiEdges(map.getTriangles())
-                : new ArrayList<>();
+        try {
+            edges = map.getHospitals().size() >= 3
+                    ? new VoronoiService().getVoronoiEdges(map.getTriangles())
+                    : new ArrayList<>();
+        } catch (Exception ex) { edges = new ArrayList<>(); }
     }
 
     private void placePatient(String rawName, double lat, double lon) {
@@ -400,6 +406,7 @@ public class MapView {
 
     private void addRandomPatientsBulk(int n) {
         if (map.getHospitals().isEmpty()) { alert("Add at least one hospital first."); return; }
+        try {
         Random rng = new Random();
         double latMin = screenToLat(H - MARGIN), latMax = screenToLat(MARGIN);
         double lonMin = screenToLon(MARGIN),     lonMax = screenToLon(W - MARGIN);
@@ -424,11 +431,13 @@ public class MapView {
             }
         refreshEdges();
         drawMap();
+        } catch (Exception ex) { alert("Error adding patients: " + ex.getMessage()); }
     }
 
     // --- Presentation: Canvas rendering ---
 
     private void drawMap() {
+        try {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.clearRect(0, 0, W, H);
         gc.setFill(Color.web("#e8f4f8")); gc.fillRect(0, 0, W, H);
@@ -507,6 +516,7 @@ public class MapView {
 
         if (cbLegend.isSelected()) drawLegend(gc);
         updateStats();
+        } catch (Exception ex) { statusBar.setText("Draw error: " + ex.getMessage()); }
     }
 
     // --- Utilities ---
