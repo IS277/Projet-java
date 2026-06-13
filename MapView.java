@@ -280,9 +280,11 @@ public class MapView {
     private void refreshEdges() {
         try {
             edges = map.getHospitals().size() >= 3
-                    ? new VoronoiService().getVoronoiEdges(map.getTriangles())
-                    : new ArrayList<>();
-        } catch (Exception ex) { edges = new ArrayList<>(); }
+                ? map.getVoronoiEdges()
+                : new ArrayList<>();
+        } catch (Exception ex) {
+            edges = new ArrayList<>();
+        }
     }
 
     private void placePatient(String rawName, double lat, double lon) {
