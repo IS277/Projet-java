@@ -11,6 +11,16 @@ import javafx.stage.Stage;
 import java.util.*;
 import java.util.function.Consumer;
 
+/**
+ * JavaFX view providing an interactive patient simulation panel.
+ *
+ * <p>Allows the dispatcher to create individual or batches of random patients,
+ * observe real-time assignment results in a log and monitor hospital saturation.
+ * A callback ({@link #setOnPatientPlaced}) lets {@link MapView} synchronise its state.</p>
+ *
+ * @author Maissa Tirsane, Anas Chokri, Iyed Souissi, Valery Vo-Van
+ * @version 1.0
+ */
 public class SimulationView {
 
     private final List<Hospital> hospitals;
@@ -19,12 +29,25 @@ public class SimulationView {
     private final Random rng = new Random();
     private Consumer<Patient> onPatientPlaced;
 
+    /**
+     * Registers a callback invoked each time a patient is created via this view.
+     *
+     * @param cb consumer receiving the newly created {@link Patient}
+     */
     public void setOnPatientPlaced(Consumer<Patient> cb) { this.onPatientPlaced = cb; }
 
+    /**
+     * Creates a simulation view bound to the given list of hospitals.
+     *
+     * @param hospitals hospitals against which patients will be assigned
+     */
     public SimulationView(List<Hospital> hospitals) {
         this.hospitals = hospitals;
     }
 
+    /**
+     * Builds and displays the simulation window.
+     */
     public void show() {
         log.setEditable(false);
         log.setPrefHeight(320);
